@@ -6,8 +6,8 @@ import { createContext, ReactNode, useEffect, useState } from 'react'
 import { api } from '@/lib/axios'
 
 //  -== SETTING_CONFIG ==-  ||
-const GITHUB_USER = 'brennoclins'
-const GITHUB_REPO = 'dica-dev'
+const GITHUB_USER = process.env.NEXT_PUBLIC_GITHUB_USER || 'brennoclins'
+const GITHUB_REPO = process.env.NEXT_PUBLIC_GITHUB_REPO || 'dica-dev'
 // --------------------------\\
 
 type User = {

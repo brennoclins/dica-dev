@@ -3,7 +3,7 @@
 import { format, formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
 import {
-  ArrowSquareOut,
+  // ArrowSquareOut,
   CalendarBlank,
   CaretLeft,
   ChatCircle,

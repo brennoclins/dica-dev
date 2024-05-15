@@ -6,6 +6,7 @@
   justify-center
   items-center 
 
+  min-h-screen
   overflow-hidden
 }
 
@@ -67,6 +68,8 @@
   
   md:grid-cols-2
   xl:gap-4
+  min-h-screen
+  p-2
 }
 
 .postCard {
