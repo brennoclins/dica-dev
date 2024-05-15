@@ -35,7 +35,7 @@ export function SearchForm() {
   function handleSearchPost(event: FormEvent) {
     event.preventDefault()
 
-    const postsFilted = issues.filter((post) => post.title.includes(searchText))
+    const postsFilted = issues.filter((post) => post.body.includes(searchText))
     if (postsFilted.length === 0) {
       alert(`Termo não encontrado: ${searchText}`)
     } else {
