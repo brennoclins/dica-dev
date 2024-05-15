@@ -1,9 +1,15 @@
 {
-  "extends": ["next/core-web-vitals", "@rocketseat/eslint-config/react"],
-  "plugins": ["simple-import-sort"],
+  "extends": [
+    "next/core-web-vitals", 
+    "@rocketseat/eslint-config/react", 
+    "plugin:react-hooks/recommended"
+  ],
+  "plugins": ["simple-import-sort", "react-hooks"],
   "rules": {
-    "simple-import-sort/imports": "error"
+    "simple-import-sort/imports": "error",
     // "simple-import-sort/exports": "error"
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "parserOptions": {
     "sourceType": "module",

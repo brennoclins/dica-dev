@@ -1,0 +1,31 @@
+.home {
+  @apply
+  relative 
+  flex
+  flex-col 
+  items-center 
+  justify-center
+  bg-[url('/ferrari.jpeg')] 
+  bg-cover
+  z-0
+}
+
+.homeOverLayer {
+  @apply
+  absolute
+  w-full
+  h-full
+  
+  bg-gray-950/50 
+  -z-10
+}
+
+.homeContainer {
+  @apply
+  max-w-5xl
+  flex 
+  flex-col 
+  items-center 
+  justify-around
+}
+

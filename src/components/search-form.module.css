@@ -1,0 +1,155 @@
+.searchForm {
+  @apply
+  relative
+  flex
+  flex-col
+  justify-center
+  items-center 
+
+  overflow-hidden
+}
+
+.searchFormContainer {
+  @apply
+  w-full
+  overflow-hidden
+}
+
+.searchForm form {
+  @apply
+  w-full
+  flex
+  flex-col
+  gap-2
+
+  p-4
+}
+
+.searchFormHeader {
+  @apply
+  flex
+  justify-between
+  text-base-label
+}
+
+.searchFormTitle {
+  @apply
+  text-base-title
+}
+
+.searchFormInput {
+  @apply
+  p-2
+  rounded-md
+  border-l-8
+  border-b-4
+  border-transparent
+
+  bg-base-input
+  text-base-text
+  text-lg
+  placeholder:text-base-label
+  
+  outline-none
+  duration-500
+  
+  focus:pl-4
+
+  focus:border-b-red-gladiator
+}
+
+.postCardConainer {
+  @apply
+  m-2
+  grid
+  grid-cols-1
+  gap-2
+  
+  md:grid-cols-2
+  xl:gap-4
+}
+
+.postCard {
+  @apply
+  h-[22rem]
+  relative
+
+  p-4
+  bg-base-background
+  text-base-text
+  rounded-lg
+
+  border
+  border-transparent
+  hover:border-base-border
+}
+
+
+.postCardHeader {
+  @apply
+  flex
+  flex-col
+  gap-2
+  mb-2
+  lg:justify-between
+}
+
+.postCardTitle {
+  @apply
+  w-full
+  text-2xl
+  text-base-title
+  font-bold
+  
+  xl:w-3/5
+}
+
+.postCardDate {
+  @apply
+  text-end
+  xl:text-start
+  text-sm
+  italic
+}
+
+.postCardText {
+  @apply
+  my-4
+  overflow-hidden
+  line-clamp-6
+}
+.postCardText p {
+  @apply
+  p-2
+}
+.postCardText pre {
+  @apply
+  p-2
+  bg-background-gladiator
+}
+
+.postCardLink {
+  @apply
+  absolute
+  top-0
+  left-0
+  rounded-lg
+  
+  w-full
+  h-full
+
+  flex
+  justify-center
+  items-center
+  font-bold
+  text-2xl
+  text-transparent
+  
+  hover:text-base-subtitle
+  hover:bg-red-gladiator
+
+  transition-all
+  duration-300
+  ease-linear
+}
+ 

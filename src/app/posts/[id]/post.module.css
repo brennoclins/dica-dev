@@ -1,0 +1,160 @@
+.post {
+  @apply
+  min-h-screen
+  flex
+  items-start
+  justify-center
+  p-2
+  lg:pt-8
+
+  bg-[url('/ferrari.jpeg')]
+  bg-cover
+}
+.postContainer {
+  @apply
+  rounded-lg
+  bg-base-background
+  max-w-5xl
+  w-full
+  h-full
+  relative
+    
+  flex
+  flex-col
+  justify-center
+  items-center
+
+  overflow-hidden
+  p-2
+}
+
+.postHeader {
+  @apply
+  /* overflow-hidden */
+  w-full
+  p-4
+  
+  flex
+  flex-col
+  gap-4
+  
+  rounded-lg
+  bg-base-profile
+}
+
+
+.postHeaderButtons {
+  @apply
+  w-full
+  flex
+  justify-between
+  text-sm
+  md:text-base
+}
+
+.postHeaderButtons a {
+  @apply
+  flex
+  items-start
+  gap-2
+  text-base-span
+  hover:text-red-gladiator
+  hover:font-bold
+}
+
+.postHeaderTitle {
+  @apply
+  text-xl
+  md:text-3xl
+  text-base-title
+  font-bold
+}
+
+.postHeaderTags {
+  @apply
+  flex
+  flex-col
+  gap-2
+  
+  text-base-text
+  
+  md:mt-4
+  md:flex-row
+  md:gap-8
+}
+
+.postHeaderTags span {
+  @apply
+  flex
+  justify-between
+  items-center
+  gap-2
+  
+  hover:text-base-subtitle
+}
+
+.postContent {
+  @apply
+  p-2
+  w-full
+  flex
+  flex-col
+  
+  text-base-text
+  overflow-x-scroll
+
+}
+
+.postBody {
+  @apply
+  flex
+  flex-col
+  gap-2
+  p-4
+  md:mx-20
+}
+
+.postBody h3 {
+  @apply
+  text-xl
+  font-medium
+  text-white
+}
+.postBody p {
+  @apply
+  p-2
+}
+
+.postBody pre {
+  @apply
+  p-4
+  rounded-lg
+  bg-background-gladiator
+}
+.postBody code {
+  @apply
+  font-semibold
+  text-lg
+}
+
+.postBody ul {
+  @apply
+  m-2
+  p-4
+}
+.postBody li {
+  @apply
+  relative
+}
+
+.postBody li::before {
+  @apply
+  content-['']
+  absolute
+  top-3
+  -left-5
+  rounded-full
+  w-1
+  h-1
+  bg-base-title
+}
