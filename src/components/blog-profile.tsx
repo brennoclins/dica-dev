@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import { ArrowSquareOut, Buildings, GithubLogo, Users } from 'phosphor-react'
 
 import { useGithub } from '@/hooks/useGithub'
@@ -11,7 +12,7 @@ export function BlogProfile() {
   return (
     <section className={styles.profile}>
       <div className={styles.profileAvatar}>
-        <img src={user?.avatar_url} alt="" />
+        <Image src={user?.avatar_url} alt="" />
       </div>
 
       <div className={styles.profileContent}>
