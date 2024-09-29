@@ -1,7 +1,13 @@
 'use client'
 /* eslint-disable camelcase */
 
-import { createContext, ReactNode, useEffect, useState } from 'react'
+import {
+  type ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 
 import { api } from '@/lib/axios'
 
@@ -45,7 +51,7 @@ interface GithubContextData {
 }
 
 export const GithubContext = createContext<GithubContextData>(
-  {} as GithubContextData,
+  {} as GithubContextData
 )
 
 interface GithubContextProviderData {
@@ -56,7 +62,7 @@ export function GithubContextProvider({ children }: GithubContextProviderData) {
   const [user, setUser] = useState<User>({} as User)
   const [issues, setIssues] = useState<Issues[]>([] as Issues[])
 
-  async function getUser(username: string) {
+  const getUser = useCallback(async (username: string) => {
     try {
       const response = await api.get<User>(`users/${username}`)
 
@@ -89,28 +95,31 @@ export function GithubContextProvider({ children }: GithubContextProviderData) {
       alert(`Erro ao obter dados do usuário: ${username}!`)
       console.error(`Erro ao obter dados do usuário: ${username}!`, error)
     }
-  }
+  }, [])
 
-  async function getPosts(usename: string, repository: string, query: string) {
-    try {
-      const response = await api.get(
-        `search/issues?q=${query}%20repo:${usename}/${repository}`,
-      )
+  const getPosts = useCallback(
+    async (usename: string, repository: string, query: string) => {
+      try {
+        const response = await api.get(
+          `search/issues?q=${query}%20repo:${usename}/${repository}`
+        )
 
-      setIssues(response.data.items)
-    } catch (error) {
-      alert(`Erro ao obter issues do repositório: ${repository}!`)
-      console.error(
-        `Erro ao obter issues do repositório: ${repository}!`,
-        error,
-      )
-    }
-  }
+        setIssues(response.data.items)
+      } catch (error) {
+        alert(`Erro ao obter issues do repositório: ${repository}!`)
+        console.error(
+          `Erro ao obter issues do repositório: ${repository}!`,
+          error
+        )
+      }
+    },
+    []
+  )
 
   useEffect(() => {
     getUser(GITHUB_USER)
     getPosts(GITHUB_USER, GITHUB_REPO, '')
-  }, [])
+  }, [getUser, getPosts])
 
   return (
     <GithubContext.Provider value={{ user, issues }}>
