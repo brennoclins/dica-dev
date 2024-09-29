@@ -3,7 +3,7 @@
 import { format, formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
 import Link from 'next/link'
-import { FormEvent, useEffect, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 import Markdown from 'react-markdown'
 
 import { useGithub } from '@/hooks/useGithub'
@@ -35,7 +35,7 @@ export function SearchForm() {
   function handleSearchPost(event: FormEvent) {
     event.preventDefault()
 
-    const postsFilted = issues.filter((post) => post.body.includes(searchText))
+    const postsFilted = issues.filter(post => post.body.includes(searchText))
     if (postsFilted.length === 0) {
       alert(`Termo não encontrado: ${searchText}`)
     } else {
@@ -72,21 +72,21 @@ export function SearchForm() {
             type="text"
             placeholder="Buscar conteúdo"
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+            onChange={e => setSearchText(e.target.value)}
           />
         </form>
       </section>
 
       <section className={styles.postCardConainer}>
-        {posts.map((post) => {
+        {posts.map(post => {
           const updatedAtDateFormatted = format(
             post.updated_at,
             "d 'de' LLLL 'ás' HH:mm'h'",
-            { locale: ptBR },
+            { locale: ptBR }
           )
           const updatedAtDateRelativeToNow = formatDistanceToNow(
             post.updated_at,
-            { locale: ptBR, addSuffix: true },
+            { locale: ptBR, addSuffix: true }
           )
 
           return (

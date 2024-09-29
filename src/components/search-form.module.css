@@ -38,6 +38,11 @@
   text-base-title
 }
 
+.searchFormSubTitle {
+  @apply
+  text-base-subtitle
+}
+
 .searchFormInput {
   @apply
   p-2

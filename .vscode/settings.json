@@ -5,5 +5,8 @@
   // Organiza importações automaticamente
   "editor.codeActionsOnSave": {
     "source.organizeImports.biome": "explicit"
-  }
+  },
+
+  // TailwindCSS / Unknown at rule @tailwindcss(unknownAtRules)
+  "css.lint.unknownAtRules": "ignore"
 }
