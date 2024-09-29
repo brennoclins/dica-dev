@@ -2,64 +2,58 @@
 
 ![screen](/public/noproject/criandoGIFcomImagens_by_Brenno.gif)
 
-Bem-vindo ao **Dica-Dev**! Este é um blog tech com dicas para desenvolvedores de software. Os posts do blog são gerados a partir das issues do repositório GitHub deste projeto.
+Benvenuto su **Dica-Dev**! Questo è un blog tech con consigli per sviluppatori di software. I post del blog sono generati dalle issues del repository GitHub di questo progetto.
 
-- [Don't speak Portuguese? Click and read the README in English](/README_US.md)
-- [Не говорите по-португальски? Нажмите и прочитайте README на русском языке](/READEM_RU.md)
-- [Non parli portoghese? Clicca e leggi il README in italiano](/README_IT.md)
-- [不會說葡萄牙語？點擊並閱讀義大利語自述文件](/README_CN.md)
+## Tecnologie Utilizzate
 
+- [Next.js](https://nextjs.org/): Framework React per il rendering lato server e la generazione di siti statici.
+- [Biome.js](https://biomejs.dev/): Strumento per il linting e la formattazione del codice.
+- [Tailwind CSS](https://tailwindcss.com/docs/guides/nextjs): Framework CSS utilitario per una rapida stilizzazione.
+- [CSS Modules](): Per il scope locale del CSS.
+- [TypeScript](https://www.typescriptlang.org/): Superset di JavaScript che aggiunge la tipizzazione statica al codice.
+- [Axios](https://axios-http.com/docs/intro#:~:text=What%20is%20Axios?%20Axios%20is%20a%20promise-based%20HTTP%20Client%20for): Client HTTP per effettuare richieste all'API di GitHub.
+- [date-fns](https://date-fns.org/): Libreria per la manipolazione e la formattazione delle date.
+- [API de Contexto do React](https://react.dev/reference/react/useContext): Per la gestione dello stato globale.
+- [React Hook](https://react.dev/reference/react/hooks): Per gestire lo stato e gli effetti collaterali in React.
 
-## Tecnologias Utilizadas
+## Funzionalità
 
-- [Next.js](https://nextjs.org/): Framework React para renderização do lado do servidor e geração de sites estáticos.
-- [Biome.js](https://biomejs.dev/): Ferramenta para linting e formatação de código.
-- [Tailwind CSS](https://tailwindcss.com/docs/guides/nextjs): Framework CSS utilitário para estilização rápida e eficiente.
-- [CSS Modules](): Para escopo local de CSS.
-- [TypeScript](https://www.typescriptlang.org/): Superset de JavaScript que adiciona tipagem estática ao código.
-- [Axios](https://axios-http.com/docs/intro#:~:text=What%20is%20Axios?%20Axios%20is%20a%20promise-based%20HTTP%20Client%20for): Cliente HTTP para fazer requisições à API do GitHub.
-- [date-fns](https://date-fns.org/): Biblioteca para manipulação e formatação de datas.
-- [API de Contexto do React](https://react.dev/reference/react/useContext): Para gerenciamento de estado global.
-- [React Hook](https://react.dev/reference/react/hooks): Para gerenciar o estado e os efeitos colaterais no React.
+- **Post del Blog**: Le issues del repository GitHub sono utilizzate come post del blog. Ogni issue creata nel repository diventa un nuovo articolo sul blog.
+- **Interfaccia Frontend**: Costruita con Next.js, Tailwind CSS e CSS Modules per un'esperienza utente moderna e reattiva.
+- **Richieste all'API di GitHub**: Utilizza Axios per recuperare tutte le issues dal repository e visualizzarle come post del blog.
 
-## Funcionalidades
+## Come Eseguire il Progetto
 
-- **Posts do Blog**: As issues do repositório GitHub são usadas como posts do blog. Cada issue criada no repositório se torna um novo artigo no blog.
-- **Interface Frontend**: Construída com Next.js, Tailwind CSS e CSS Modules para uma experiência de usuário moderna e responsiva.
-- **Requisições à API do GitHub**: Utiliza Axios para buscar todas as issues do repositório e exibi-las como posts no blog.
-
-## Como Executar o Projeto
-
-1. Clone o repositório:
+1. Clona il repository:
    ```bash
    git clone https://github.com/brennoclins/dica-dev.git
    ```
 
-2. Instale as dependências:
+2. Installa le dipendenze:
     ```bash
     cd dica-dev
     npm install
     ```
 
-3. Configure as variáveis de ambiente: Crie um arquivo **.env.local** na raiz do projeto e adicione as seguintes variáveis:
+3. Configura le variabili d’ambiente: Crea un file **.env.local** nella radice del progetto e aggiungi le seguenti variabili:
     ```bash
     NEXT_PUBLIC_GITHUB_USER=brennoclins
     NEXT_PUBLIC_GITHUB_REPO=dica-dev
     ```
 
-4. Execute o projeto:
+4. Esegui il progetto:
     ```bash
     npm run dev
     ```
 
-5. Acesse o projeto no navegador:
+5. Accedi al progetto nel browser:
     ```bash
     http://localhost:3000
     ```
 
-## Contribuição
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests.
+## Contributi
+I contributi sono benvenuti! Sentiti libero di aprire issues e pull requests.
 
 
-## Link do Blog
-- [Acesse o blog em: Dica-Dev](https://dica-dev.vercel.app/)
+## Link del Blog
+- [Accedi al blog: Dica-Dev](https://dica-dev.vercel.app/)
