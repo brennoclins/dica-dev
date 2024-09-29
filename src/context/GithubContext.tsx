@@ -98,13 +98,34 @@ export function GithubContextProvider({ children }: GithubContextProviderData) {
   }, [])
 
   const getPosts = useCallback(
-    async (usename: string, repository: string, query: string) => {
+    async (username: string, repository: string, query: string) => {
       try {
-        const response = await api.get(
-          `search/issues?q=${query}%20repo:${usename}/${repository}`
-        )
+        // const response = await api.get(
+        //   `search/issues?q=${query}%20repo:${username}/${repository}`
+        // )
 
-        setIssues(response.data.items)
+        // setIssues(response.data.items)
+
+        let page = 1
+        let allIssues: Issues[] = []
+        let hasMoreIssues = true
+
+        while (hasMoreIssues) {
+          const response = await api.get(
+            `search/issues?q=${query}%20repo:${username}/${repository}&page=${page}&per_page=30`
+          )
+
+          const issues = response.data.items
+          allIssues = [...allIssues, ...issues]
+
+          if (issues.length < 30) {
+            hasMoreIssues = false
+          } else {
+            page++
+          }
+        }
+
+        setIssues(allIssues)
       } catch (error) {
         alert(`Erro ao obter issues do repositório: ${repository}!`)
         console.error(
