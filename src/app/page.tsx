@@ -8,7 +8,9 @@ export default function Home() {
     <main className={styles.home}>
       <div className={styles.homeOverLayer} />
       <section className={styles.homeContainer}>
-        <h1 className="text-white text-5xl m-12 text-center">Dica Dev</h1>
+        <h1 className="text-white text-5xl m-12 text-center">
+          Dica Dev - Brenno
+        </h1>
         <SearchForm />
 
         {/* <BlogProfile /> */}

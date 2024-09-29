@@ -19,16 +19,16 @@ export default function NotFound() {
         <div className={styles.wrapper}>
           {/* <div className="t" style={{ '--i': 1 }}></div> */}
 
-          <div className={styles.t} style={{ ['--i' as string]: 11 }}></div>
-          <div className={styles.t} style={{ ['--i' as string]: 12 }}></div>
-          <div className={styles.t} style={{ ['--i' as string]: 13 }}></div>
-          <div className={styles.t} style={{ ['--i' as string]: 14 }}></div>
-          <div className={styles.t} style={{ ['--i' as string]: 15 }}></div>
-          <div className={styles.t} style={{ ['--i' as string]: 16 }}></div>
-          <div className={styles.t} style={{ ['--i' as string]: 17 }}></div>
-          <div className={styles.t} style={{ ['--i' as string]: 18 }}></div>
-          <div className={styles.t} style={{ ['--i' as string]: 19 }}></div>
-          <div className={styles.t} style={{ ['--i' as string]: 20 }}></div>
+          <div className={styles.t} style={{ ['--i' as string]: 11 }} />
+          <div className={styles.t} style={{ ['--i' as string]: 12 }} />
+          <div className={styles.t} style={{ ['--i' as string]: 13 }} />
+          <div className={styles.t} style={{ ['--i' as string]: 14 }} />
+          <div className={styles.t} style={{ ['--i' as string]: 15 }} />
+          <div className={styles.t} style={{ ['--i' as string]: 16 }} />
+          <div className={styles.t} style={{ ['--i' as string]: 17 }} />
+          <div className={styles.t} style={{ ['--i' as string]: 18 }} />
+          <div className={styles.t} style={{ ['--i' as string]: 19 }} />
+          <div className={styles.t} style={{ ['--i' as string]: 20 }} />
         </div>
       </div>
     </section>
