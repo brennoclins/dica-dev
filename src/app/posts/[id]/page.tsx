@@ -13,12 +13,13 @@ import Markdown from 'react-markdown'
 
 import { useGithub } from '@/hooks/useGithub'
 
+import Link from 'next/link'
 import styles from './post.module.css'
 
 export default function PostPage({ params }: { params: { id: string } }) {
   const { issues } = useGithub()
 
-  const post = issues.find((post) => post.number === Number(params.id))
+  const post = issues.find(post => post.number === Number(params.id))
 
   if (!post) {
     return
@@ -27,7 +28,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
   const updatedAtDateFormatted = format(
     post.updated_at,
     "d 'de' LLLL 'ás' HH:mm'h'",
-    { locale: ptBR },
+    { locale: ptBR }
   )
   const updatedAtDateRelativeToNow = formatDistanceToNow(post.updated_at, {
     locale: ptBR,
@@ -51,7 +52,14 @@ export default function PostPage({ params }: { params: { id: string } }) {
 
           <div className={styles.postHeaderTags}>
             <span>
-              <GithubLogo size={22} /> {post.user.login}
+              <GithubLogo size={22} />
+              <Link
+                href={'https://github.com/brennoclins'}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {post.user.login}
+              </Link>
             </span>
             <span>
               <CalendarBlank size={22} />

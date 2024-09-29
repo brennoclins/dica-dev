@@ -93,6 +93,11 @@
   hover:text-base-subtitle
 }
 
+.postHeaderTags span a {
+  @apply  
+  hover:text-red-gladiator
+}
+
 .postContent {
   @apply
   p-2
