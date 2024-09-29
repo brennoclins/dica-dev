@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <GithubContextProvider>
-      <html lang="pt-br">
+      <html lang="pt-BR">
         <body className={inter.className}>{children}</body>
       </html>
     </GithubContextProvider>
