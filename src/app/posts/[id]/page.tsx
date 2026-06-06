@@ -21,15 +21,21 @@ import { renderMarkdown } from '@/lib/markdown'
 import styles from './post.module.css'
 
 export const revalidate = 3600
+export const dynamicParams = true
 
 type PostPageProps = {
   params: Promise<{ id: string }>
 }
 
+const SSG_LIMIT = 5
+
 export async function generateStaticParams() {
+  if (!githubConfig.hasToken) {
+    return []
+  }
   try {
     const issues = await getGithubIssues()
-    return issues.slice(0, 50).map(issue => ({
+    return issues.slice(0, SSG_LIMIT).map(issue => ({
       id: String(issue.number),
     }))
   } catch {

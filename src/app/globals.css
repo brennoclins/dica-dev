@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand */
-  --color-blue: #3294F8;
-  --color-link-active: #9747FF;
+  /* Brand - OKLCH for proper /opacity modifier support */
+  --color-blue: oklch(0.65 0.18 250);
+  --color-link-active: oklch(0.55 0.27 295);
 
   /* Base palette (deep blue dark theme) */
-  --color-base-title: #E7EDF4;
-  --color-base-subtitle: #C4D4E3;
-  --color-base-text: #AFC2D4;
-  --color-base-span: #7B96B2;
-  --color-base-label: #3A536B;
-  --color-base-border: #1C2F41;
-  --color-base-post: #112131;
-  --color-base-profile: #0B1B2B;
-  --color-base-background: #071422;
-  --color-base-input: #040F1A;
+  --color-base-title: oklch(0.93 0.01 230);
+  --color-base-subtitle: oklch(0.83 0.02 230);
+  --color-base-text: oklch(0.75 0.03 230);
+  --color-base-span: oklch(0.62 0.04 235);
+  --color-base-label: oklch(0.42 0.05 235);
+  --color-base-border: oklch(0.27 0.04 235);
+  --color-base-post: oklch(0.18 0.03 230);
+  --color-base-profile: oklch(0.13 0.03 230);
+  --color-base-background: oklch(0.11 0.03 230);
+  --color-base-input: oklch(0.08 0.03 230);
 
   /* Gladiator (red accent) */
-  --color-red-gladiator: #ff0000;
-  --color-post-gladiator: #440808;
-  --color-border-gladiator: #5B0909;
-  --color-background-gladiator: #360303;
+  --color-red-gladiator: oklch(0.63 0.26 27);
+  --color-post-gladiator: oklch(0.21 0.06 25);
+  --color-border-gladiator: oklch(0.25 0.08 25);
+  --color-background-gladiator: oklch(0.17 0.06 25);
 
   /* Custom gradients reused from the old config */
   --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
