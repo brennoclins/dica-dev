@@ -128,29 +128,56 @@ type SearchIssuesResponse = {
   items: GithubIssue[]
 }
 
-export async function getGithubIssues(
+export async function getGithubIssuesPage(
+  page: number = 1,
+  perPage: number = 10,
   query: string = '',
   user: string = GITHUB_USER,
   repo: string = GITHUB_REPO
-): Promise<GithubIssue[]> {
+): Promise<{
+  items: GithubIssue[]
+  total_count: number
+  hasMore: boolean
+}> {
   const trimmed = query.trim()
   const q = trimmed
     ? `${encodeURIComponent(trimmed)}+repo:${user}/${repo}`
     : `repo:${user}/${repo}`
 
+  const data = await githubFetch<SearchIssuesResponse>(
+    `/search/issues?q=${q}&page=${page}&per_page=${perPage}&sort=updated&order=desc`
+  )
+
+  const hasMore =
+    data.items.length === perPage && data.total_count > page * perPage
+
+  return {
+    items: data.items,
+    total_count: data.total_count,
+    hasMore,
+  }
+}
+
+export async function getGithubIssues(
+  query: string = '',
+  user: string = GITHUB_USER,
+  repo: string = GITHUB_REPO
+): Promise<GithubIssue[]> {
   let page = 1
   const perPage = 100
   const all: GithubIssue[] = []
+  const seen = new Set<number>()
 
   while (true) {
-    const data = await githubFetch<SearchIssuesResponse>(
-      `/search/issues?q=${q}&page=${page}&per_page=${perPage}&sort=updated&order=desc`
-    )
-    all.push(...data.items)
-
-    if (data.items.length < perPage || all.length >= data.total_count) break
+    const data = await getGithubIssuesPage(page, perPage, query, user, repo)
+    for (const issue of data.items) {
+      if (!seen.has(issue.number)) {
+        seen.add(issue.number)
+        all.push(issue)
+      }
+    }
+    if (!data.hasMore || all.length >= data.total_count) break
     page++
-
     if (page > 10) break
   }
 

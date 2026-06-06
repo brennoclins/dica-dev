@@ -2,52 +2,26 @@
 
 .searchForm {
   @apply
-  relative
+  w-full
+  max-w-2xl
+  mx-auto
   flex
   flex-col
-  justify-center
-  items-center 
-
-  min-h-screen
-  overflow-hidden
+  gap-3
 }
 
-.searchFormContainer {
-  @apply
-  w-full
-  overflow-hidden
-}
-
-.searchForm form {
+.searchFormForm {
   @apply
   w-full
   flex
   flex-col
   gap-2
-
-  p-4
-}
-
-.searchFormHeader {
-  @apply
-  flex
-  justify-between
-  text-base-label
-}
-
-.searchFormTitle {
-  @apply
-  text-base-title
-}
-
-.searchFormSubTitle {
-  @apply
-  text-base-subtitle
 }
 
 .searchFormInput {
   @apply
-  p-2
+  w-full
+  p-3
   rounded-md
   border-l-8
   border-b-4
@@ -72,8 +46,6 @@
   flex-wrap
   items-center
   gap-2
-  px-4
-  pt-1
   text-base-span
 }
 
@@ -103,12 +75,6 @@
   text-red-gladiator
 }
 
-.searchFormChipCount {
-  @apply
-  text-[0.65rem]
-  opacity-60
-}
-
 .searchFormClear {
   @apply
   inline-flex
@@ -134,128 +100,3 @@
   text-blue
   hover:text-red-gladiator
 }
-
-.postCardConainer {
-  @apply
-  m-2
-  grid
-  grid-cols-1
-  gap-2
-  
-  md:grid-cols-2
-  xl:gap-4
-  min-h-screen
-  p-2
-}
-
-.postCard {
-  @apply
-  h-[22rem]
-  relative
-
-  p-4
-  bg-base-background
-  text-base-text
-  rounded-lg
-
-  border
-  border-transparent
-  hover:border-base-border
-}
-
-
-.postCardHeader {
-  @apply
-  flex
-  flex-col
-  gap-2
-  mb-2
-  lg:justify-between
-}
-
-.postCardTitle {
-  @apply
-  w-full
-  text-2xl
-  text-base-title
-  font-bold
-  
-  xl:w-3/5
-}
-
-.postCardDate {
-  @apply
-  text-end
-  xl:text-start
-  text-sm
-  italic
-}
-
-.postCardText {
-  @apply
-  my-4
-  overflow-hidden
-  line-clamp-6
-}
-.postCardText p {
-  @apply
-  p-2
-}
-.postCardText pre {
-  @apply
-  p-2
-  bg-background-gladiator
-}
-
-.postCardPreview {
-  @apply
-  my-4
-  max-h-72
-  overflow-hidden
-  text-ellipsis
-  text-sm
-}
-.postCardPreview p {
-  @apply
-  my-1
-  overflow-hidden
-}
-.postCardPreview pre {
-  @apply
-  p-2
-  my-2
-  overflow-hidden
-  rounded
-  bg-background-gladiator
-}
-.postCardPreview a {
-  @apply
-  text-blue
-  underline
-}
-
-.postCardLink {
-  @apply
-  absolute
-  top-0
-  left-0
-  rounded-lg
-  
-  w-full
-  h-full
-
-  flex
-  justify-center
-  items-center
-  font-bold
-  text-2xl
-  text-transparent
-  
-  hover:text-base-subtitle
-  hover:bg-red-gladiator
-
-  transition-all
-  duration-300
-  ease-linear
-}
- 

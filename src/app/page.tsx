@@ -1,11 +1,15 @@
 import { BlogProfile } from '@/components/blog-profile'
 import { PersonJsonLd, WebsiteJsonLd } from '@/components/json-ld'
 import { LanguageSwitcher } from '@/components/language-switcher'
+import type { PostCardData } from '@/components/post-card'
+import { PostsFeed } from '@/components/posts-feed'
 import { RateLimitNotice } from '@/components/rate-limit-notice'
-import { type PostPreview, SearchForm } from '@/components/search-form'
+import { SearchForm } from '@/components/search-form'
 import { ThemeToggle } from '@/components/theme-toggle'
 import {
+  getGithubIssuesPage,
   getGithubIssuesSafe,
+  getGithubLabels,
   getGithubUserSafe,
   githubConfig,
 } from '@/lib/github'
@@ -17,6 +21,9 @@ import styles from './home.module.css'
 
 export const revalidate = 3600
 
+const POSTS_PER_PAGE = 10
+const PREVIEW_LENGTH = 600
+
 type HomePageProps = {
   searchParams: Promise<{ q?: string; label?: string; lang?: string }>
 }
@@ -25,25 +32,45 @@ export default async function Home({ searchParams }: HomePageProps) {
   const { q = '', label = '', lang } = await searchParams
   const locale = resolveLocale(lang)
   const t = createTranslator(locale)
-  const [issuesResult, user] = await Promise.all([
-    getGithubIssuesSafe(q),
+
+  const combinedQuery = [q.trim(), label ? `label:"${label}"` : '']
+    .filter(Boolean)
+    .join(' ')
+
+  const [issuesResult, user, firstPage, labels] = await Promise.all([
+    getGithubIssuesSafe(combinedQuery),
     getGithubUserSafe(),
+    combinedQuery
+      ? getGithubIssuesPage(1, POSTS_PER_PAGE, combinedQuery)
+      : getGithubIssuesPage(1, POSTS_PER_PAGE, ''),
+    getGithubLabels().catch(() => []),
   ])
 
-  const posts: PostPreview[] = issuesResult.error
-    ? []
-    : await Promise.all(
-        issuesResult.issues.map(async issue => ({
-          number: issue.number,
-          title: issue.title,
-          updated_at: issue.updated_at,
-          labels: issue.labels,
-          previewHtml: await renderMarkdownPreview(issue.body ?? '', 600),
-        }))
-      )
+  const safeIssues = combinedQuery ? issuesResult.issues : firstPage.items
+  const totalCount = combinedQuery
+    ? issuesResult.issues.length
+    : firstPage.total_count
+  const hasMore = combinedQuery ? false : firstPage.hasMore
+
+  const initialPosts: PostCardData[] = await Promise.all(
+    safeIssues.slice(0, POSTS_PER_PAGE).map(async issue => ({
+      number: issue.number,
+      title: issue.title,
+      updated_at: issue.updated_at,
+      labels: issue.labels,
+      previewHtml: await renderMarkdownPreview(
+        issue.body ?? '',
+        PREVIEW_LENGTH
+      ),
+    }))
+  )
+
+  const heroIssuesResult = combinedQuery
+    ? { issues: safeIssues, error: issuesResult.error }
+    : { issues: safeIssues, error: null as null }
 
   return (
-    <main className={styles.home}>
+    <>
       {user && (
         <WebsiteJsonLd
           authorName={SITE_CONFIG.author}
@@ -58,27 +85,43 @@ export default async function Home({ searchParams }: HomePageProps) {
           githubUrl={user.html_url}
         />
       )}
-      <div className={styles.homeOverLayer} />
-      <header className={styles.homeHeader}>
-        <span />
-        <div className="flex items-center gap-2">
-          <LanguageSwitcher current={locale} />
-          <ThemeToggle />
+
+      <section className={styles.hero}>
+        <div className={styles.heroOverlay} />
+        <header className={styles.heroHeader}>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher current={locale} />
+            <ThemeToggle />
+          </div>
+        </header>
+        <div className={styles.heroContent}>
+          <h1 className={styles.heroTitle}>{t('home.heading')}</h1>
+          {user && <BlogProfile user={user} />}
+          <SearchForm
+            labels={labels}
+            initialQuery={q}
+            activeLabel={label}
+            locale={locale}
+          />
         </div>
-      </header>
-      <section className={styles.homeContainer}>
-        <h1 className="m-12 text-center text-5xl text-base-title">
-          {t('home.heading')}
-        </h1>
-        {user && <BlogProfile user={user} />}
-        {issuesResult.error && <RateLimitNotice error={issuesResult.error} />}
-        <SearchForm
-          initialPosts={posts}
-          initialQuery={q}
-          activeLabel={label}
+        <div className={styles.heroFade} />
+      </section>
+
+      {heroIssuesResult.error ? (
+        <section className={styles.feed}>
+          <RateLimitNotice error={heroIssuesResult.error} />
+        </section>
+      ) : (
+        <PostsFeed
+          initialPosts={initialPosts}
+          initialHasMore={hasMore}
+          initialTotalCount={totalCount}
+          perPage={POSTS_PER_PAGE}
+          query={q}
+          label={label}
           locale={locale}
         />
-      </section>
-    </main>
+      )}
+    </>
   )
 }
