@@ -53,6 +53,27 @@ test.describe('Home page', () => {
     }
   })
 
+  test('feed renders the first page of posts as cards', async ({ page }) => {
+    await page.goto('/')
+    const feed = page.locator('ul').filter({ hasText: 'Publicações' }).first()
+    await expect(feed.locator('article').first()).toBeVisible()
+  })
+
+  test('Load More button appends more posts when clicked', async ({ page }) => {
+    await page.goto('/')
+    const feed = page.locator('ul').filter({ hasText: 'Publicações' }).first()
+    await expect(feed.locator('article').first()).toBeVisible()
+    const initialCount = await feed.locator('article').count()
+
+    const loadMore = page.getByRole('button', { name: /carregar mais/i })
+    if (await loadMore.isVisible().catch(() => false)) {
+      await loadMore.click()
+      await page.waitForLoadState('networkidle')
+      const newCount = await feed.locator('article').count()
+      expect(newCount).toBeGreaterThan(initialCount)
+    }
+  })
+
   test('404 page has a working link home', async ({ page }) => {
     const response = await page.goto('/this-does-not-exist')
     expect(response?.status()).toBe(404)
