@@ -14,7 +14,21 @@
     "lint": "biome lint .",
     "format": "biome format --write .",
     "check": "biome check --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "biome check --write --no-errors-on-unmatched",
+      "vitest related --run"
+    ],
+    "*.{css,json,md}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
@@ -38,12 +52,22 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
     "@tailwindcss/postcss": "^4.3.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.19.19",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
+    "@vitest/ui": "^4.1.8",
+    "happy-dom": "^20.10.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.8"
   }
 }

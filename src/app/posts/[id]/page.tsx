@@ -194,6 +194,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
           <div
             className={`${styles.postBody} post-body`}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is generated server-side by rehype/remark from author-supplied markdown; the post page is a trusted authoring flow.
             dangerouslySetInnerHTML={{ __html: bodyHtml }}
           />
 

@@ -131,9 +131,8 @@ export function SearchForm({
         </form>
 
         {allLabels.length > 0 && (
-          <div
+          <fieldset
             className={styles.searchFormLabels}
-            role="group"
             aria-label="Filtrar por categoria"
           >
             <Tag size={18} aria-hidden />
@@ -164,7 +163,7 @@ export function SearchForm({
                 <X size={14} weight="bold" /> Limpar
               </button>
             )}
-          </div>
+          </fieldset>
         )}
       </section>
 
@@ -218,6 +217,7 @@ export function SearchForm({
 
                   <div
                     className={styles.postCardPreview}
+                    // biome-ignore lint/security/noDangerouslySetInnerHtml: previewHtml is generated server-side by remark/rehype from author-supplied markdown.
                     dangerouslySetInnerHTML={{ __html: post.previewHtml }}
                   />
                 </div>

@@ -51,6 +51,7 @@ export function ArticleJsonLd({ post, authorName, authorUrl }: JsonLdProps) {
   return (
     <script
       type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON.stringify output is a safe, well-formed string.
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
   )
@@ -84,6 +85,7 @@ export function WebsiteJsonLd({ authorName, authorUrl }: WebsiteJsonLdProps) {
   return (
     <script
       type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON.stringify output is a safe, well-formed string.
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
   )
@@ -115,6 +117,7 @@ export function PersonJsonLd({
   return (
     <script
       type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON.stringify output is a safe, well-formed string.
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
   )
