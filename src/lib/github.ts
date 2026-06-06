@@ -1,5 +1,7 @@
 import 'server-only'
 
+import { isExcludedByLabel } from './site'
+
 const GITHUB_API_BASE = 'https://api.github.com'
 
 const GITHUB_USER = process.env.NEXT_PUBLIC_GITHUB_USER || 'brennoclins'
@@ -148,11 +150,15 @@ export async function getGithubIssuesPage(
     `/search/issues?q=${q}&page=${page}&per_page=${perPage}&sort=updated&order=desc`
   )
 
+  const visibleItems = data.items.filter(
+    issue => !isExcludedByLabel(issue.labels)
+  )
+
   const hasMore =
     data.items.length === perPage && data.total_count > page * perPage
 
   return {
-    items: data.items,
+    items: visibleItems,
     total_count: data.total_count,
     hasMore,
   }
@@ -231,6 +237,7 @@ export async function getRelatedIssues(
     .filter(
       issue =>
         issue.number !== currentNumber &&
+        !isExcludedByLabel(issue.labels) &&
         issue.labels.some(l => labelSet.has(l.name))
     )
     .slice(0, limit)
