@@ -35,6 +35,10 @@ export default process.env.SENTRY_DSN
       silent: !process.env.CI,
       widenClientFileUpload: true,
       hideSourceMaps: true,
-      disableLogger: true,
+      webpack: {
+        treeshake: {
+          removeDebugLogging: true,
+        },
+      },
     })
   : nextConfig
