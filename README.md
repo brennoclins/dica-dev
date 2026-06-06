@@ -5,7 +5,7 @@
 Bem-vindo ao **Dica-Dev**! Este é um blog tech com dicas para desenvolvedores de software. Os posts do blog são gerados a partir das issues do repositório GitHub deste projeto.
 
 - [Don't speak Portuguese? Click and read the README in English](/README_US.md)
-- [Не говорите по-португальски? Нажмите и прочитайте README на русском языке](/READEM_RU.md)
+- [Не говорите по-португальски? Нажмите и прочитайте README на русском языке](/README_RU.md)
 - [Non parli portoghese? Clicca e leggi il README in italiano](/README_IT.md)
 - [不會說葡萄牙語？點擊並閱讀義大利語自述文件](/README_CN.md)
 
