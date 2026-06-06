@@ -8,7 +8,7 @@ import {
   CaretLeft,
   ChatCircle,
   GithubLogo,
-} from 'phosphor-react'
+} from '@phosphor-icons/react/dist/ssr'
 import Markdown from 'react-markdown'
 
 import { useGithub } from '@/hooks/useGithub'

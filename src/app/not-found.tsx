@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowFatLeft } from 'phosphor-react'
+import { ArrowFatLeft } from '@phosphor-icons/react/dist/ssr'
 
 import styles from './not-found.module.css'
 
