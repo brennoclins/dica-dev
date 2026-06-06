@@ -13,13 +13,17 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import { RelatedPosts } from '@/components/related-posts'
+import { ShareButtons } from '@/components/share-buttons'
 import {
   GithubApiError,
   getGithubIssue,
   getGithubIssues,
+  getRelatedIssues,
   githubConfig,
 } from '@/lib/github'
 import { extractToc, readingTime, renderMarkdown } from '@/lib/markdown'
+import { SITE_URL } from '@/lib/site'
 
 import styles from './post.module.css'
 
@@ -113,6 +117,12 @@ export default async function PostPage({ params }: PostPageProps) {
   const bodyHtml = await renderMarkdown(post.body ?? '')
   const toc = extractToc(post.body ?? '')
   const readTime = readingTime(post.body ?? '')
+  const related = await getRelatedIssues(
+    post.number,
+    post.labels.map(l => l.name),
+    3
+  )
+  const postUrl = `${SITE_URL}/posts/${post.number}`
 
   return (
     <main className={styles.post}>
@@ -201,6 +211,9 @@ export default async function PostPage({ params }: PostPageProps) {
               </ul>
             </footer>
           )}
+
+          <ShareButtons title={post.title} url={postUrl} />
+          <RelatedPosts posts={related} />
         </section>
       </section>
     </main>

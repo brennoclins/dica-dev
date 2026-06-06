@@ -165,6 +165,23 @@ export async function getGithubLabels(
   )
 }
 
+export async function getRelatedIssues(
+  currentNumber: number,
+  labelNames: string[],
+  limit = 3
+): Promise<GithubIssue[]> {
+  if (labelNames.length === 0) return []
+  const all = await getGithubIssues()
+  const labelSet = new Set(labelNames)
+  return all
+    .filter(
+      issue =>
+        issue.number !== currentNumber &&
+        issue.labels.some(l => labelSet.has(l.name))
+    )
+    .slice(0, limit)
+}
+
 export const githubConfig = {
   user: GITHUB_USER,
   repo: GITHUB_REPO,
