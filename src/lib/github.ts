@@ -10,6 +10,15 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN
 
 const DEFAULT_REVALIDATE_SECONDS = 60 * 60
 
+type IssueState = 'open' | 'closed' | 'all'
+
+function parseIssueState(raw: string | undefined): IssueState {
+  if (raw === 'closed' || raw === 'all') return raw
+  return 'open'
+}
+
+const ISSUE_STATE: IssueState = parseIssueState(process.env.GITHUB_STATE)
+
 export type GithubLabel = {
   id: number
   name: string
@@ -142,9 +151,10 @@ export async function getGithubIssuesPage(
   hasMore: boolean
 }> {
   const trimmed = query.trim()
-  const q = trimmed
+  const baseQuery = trimmed
     ? `${encodeURIComponent(trimmed)}+repo:${user}/${repo}`
     : `repo:${user}/${repo}`
+  const q = ISSUE_STATE === 'all' ? baseQuery : `${baseQuery}+is:${ISSUE_STATE}`
 
   const data = await githubFetch<SearchIssuesResponse>(
     `/search/issues?q=${q}&page=${page}&per_page=${perPage}&sort=updated&order=desc`
