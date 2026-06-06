@@ -1,0 +1,31 @@
+@reference "../app/globals.css";
+
+.switcher {
+  @apply
+  inline-flex
+  rounded-full
+  border
+  border-base-border
+  bg-base-input
+  p-0.5
+}
+
+.option {
+  @apply
+  px-3
+  py-1
+  text-xs
+  font-semibold
+  rounded-full
+  text-base-span
+  no-underline
+  transition-colors
+  hover:text-base-title
+}
+
+.optionActive {
+  @apply
+  bg-red-gladiator
+  text-white
+  hover:text-white
+}

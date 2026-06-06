@@ -1,5 +1,6 @@
 import { BlogProfile } from '@/components/blog-profile'
 import { PersonJsonLd, WebsiteJsonLd } from '@/components/json-ld'
+import { LanguageSwitcher } from '@/components/language-switcher'
 import { RateLimitNotice } from '@/components/rate-limit-notice'
 import { type PostPreview, SearchForm } from '@/components/search-form'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -8,6 +9,7 @@ import {
   getGithubUserSafe,
   githubConfig,
 } from '@/lib/github'
+import { createTranslator, resolveLocale } from '@/lib/i18n'
 import { renderMarkdownPreview } from '@/lib/markdown'
 import { SITE_CONFIG } from '@/lib/site'
 
@@ -16,11 +18,13 @@ import styles from './home.module.css'
 export const revalidate = 3600
 
 type HomePageProps = {
-  searchParams: Promise<{ q?: string; label?: string }>
+  searchParams: Promise<{ q?: string; label?: string; lang?: string }>
 }
 
 export default async function Home({ searchParams }: HomePageProps) {
-  const { q = '', label = '' } = await searchParams
+  const { q = '', label = '', lang } = await searchParams
+  const locale = resolveLocale(lang)
+  const t = createTranslator(locale)
   const [issuesResult, user] = await Promise.all([
     getGithubIssuesSafe(q),
     getGithubUserSafe(),
@@ -57,13 +61,23 @@ export default async function Home({ searchParams }: HomePageProps) {
       <div className={styles.homeOverLayer} />
       <header className={styles.homeHeader}>
         <span />
-        <ThemeToggle />
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher current={locale} />
+          <ThemeToggle />
+        </div>
       </header>
       <section className={styles.homeContainer}>
-        <h1 className="m-12 text-center text-5xl text-base-title">Dica Dev</h1>
+        <h1 className="m-12 text-center text-5xl text-base-title">
+          {t('home.heading')}
+        </h1>
         {user && <BlogProfile user={user} />}
         {issuesResult.error && <RateLimitNotice error={issuesResult.error} />}
-        <SearchForm initialPosts={posts} initialQuery={q} activeLabel={label} />
+        <SearchForm
+          initialPosts={posts}
+          initialQuery={q}
+          activeLabel={label}
+          locale={locale}
+        />
       </section>
     </main>
   )

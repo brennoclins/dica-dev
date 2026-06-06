@@ -14,6 +14,7 @@ import {
 } from 'react'
 
 import type { GithubLabel } from '@/lib/github'
+import { createTranslator, type Locale } from '@/lib/i18n'
 
 import styles from './search-form.module.css'
 
@@ -29,6 +30,7 @@ type SearchFormProps = {
   initialPosts: PostPreview[]
   initialQuery?: string
   activeLabel?: string
+  locale?: Locale
 }
 
 function matches(post: PostPreview, query: string, label: string): boolean {
@@ -48,10 +50,12 @@ export function SearchForm({
   initialPosts,
   initialQuery = '',
   activeLabel = '',
+  locale = 'pt-BR',
 }: SearchFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
+  const t = createTranslator(locale)
 
   const [searchText, setSearchText] = useState<string>(initialQuery)
 
@@ -112,28 +116,28 @@ export function SearchForm({
       <section className={styles.searchFormContainer}>
         <form onSubmit={handleSubmit}>
           <div className={styles.searchFormHeader}>
-            <h2 className={styles.searchFormTitle}>Publicações</h2>
+            <h2 className={styles.searchFormTitle}>{t('home.publications')}</h2>
             <span className={styles.searchFormSubTitle}>
-              {`${filteredPosts.length} ${
-                filteredPosts.length === 1 ? 'Publicação' : 'Publicações'
-              }`}
+              {filteredPosts.length === 1
+                ? t('home.search.count.one')
+                : t('home.search.count.other', { count: filteredPosts.length })}
             </span>
           </div>
 
           <input
             className={styles.searchFormInput}
             type="search"
-            placeholder="Buscar por título, conteúdo ou label..."
+            placeholder={t('home.search.placeholder')}
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
-            aria-label="Buscar publicações"
+            aria-label={t('home.search.aria')}
           />
         </form>
 
         {allLabels.length > 0 && (
           <fieldset
             className={styles.searchFormLabels}
-            aria-label="Filtrar por categoria"
+            aria-label={t('home.filter.label')}
           >
             <Tag size={18} aria-hidden />
             {allLabels.map(({ name, count }) => {
@@ -158,9 +162,9 @@ export function SearchForm({
                 type="button"
                 onClick={handleClear}
                 className={styles.searchFormClear}
-                title="Limpar filtros"
+                title={t('home.filter.clear.filters')}
               >
-                <X size={14} weight="bold" /> Limpar
+                <X size={14} weight="bold" /> {t('home.filter.clear')}
               </button>
             )}
           </fieldset>
@@ -174,16 +178,23 @@ export function SearchForm({
       >
         {filteredPosts.length === 0 ? (
           <p className="col-span-full p-8 text-center text-base-span">
-            Nenhuma publicação encontrada
-            {searchText && ` para "${searchText}"`}
-            {activeLabel && ` com a label "${activeLabel}"`}.
+            {searchText && activeLabel
+              ? t('home.search.empty.withBoth', {
+                  query: searchText,
+                  label: activeLabel,
+                })
+              : searchText
+                ? t('home.search.empty.withQuery', { query: searchText })
+                : activeLabel
+                  ? t('home.search.empty.withLabel', { label: activeLabel })
+                  : t('home.search.empty')}
             {(searchText || activeLabel) && (
               <button
                 type="button"
                 onClick={handleClear}
                 className={styles.searchFormClearInline}
               >
-                <ArrowSquareOut size={14} /> Limpar filtros
+                <ArrowSquareOut size={14} /> {t('home.filter.clear.filters')}
               </button>
             )}
           </p>
@@ -227,7 +238,7 @@ export function SearchForm({
                     className={styles.postCardLink}
                     href={`/posts/${post.number}`}
                   >
-                    Click e leia mais...
+                    {t('home.read.more')}
                   </Link>
                 </footer>
               </article>
