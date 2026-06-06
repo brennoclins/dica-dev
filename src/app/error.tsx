@@ -1,8 +1,12 @@
 'use client'
 
+import {
+  ArrowClockwise,
+  House,
+  WarningCircle,
+} from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import { useEffect } from 'react'
-import { ArrowClockwise, House, WarningCircle } from '@phosphor-icons/react/dist/ssr'
 
 interface ErrorPageProps {
   error: Error & { digest?: string }

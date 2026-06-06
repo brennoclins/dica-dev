@@ -1,6 +1,11 @@
 'use client'
+import {
+  ArrowSquareOut,
+  Buildings,
+  GithubLogo,
+  Users,
+} from '@phosphor-icons/react/dist/ssr'
 import Image from 'next/image'
-import { ArrowSquareOut, Buildings, GithubLogo, Users } from '@phosphor-icons/react/dist/ssr'
 
 import { useGithub } from '@/hooks/useGithub'
 

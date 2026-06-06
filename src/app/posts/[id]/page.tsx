@@ -1,7 +1,5 @@
 'use client'
 
-import { format, formatDistanceToNow } from 'date-fns'
-import { ptBR } from 'date-fns/locale/pt-BR'
 import {
   // ArrowSquareOut,
   CalendarBlank,
@@ -9,11 +7,11 @@ import {
   ChatCircle,
   GithubLogo,
 } from '@phosphor-icons/react/dist/ssr'
-import Markdown from 'react-markdown'
-
-import { useGithub } from '@/hooks/useGithub'
-
+import { format, formatDistanceToNow } from 'date-fns'
+import { ptBR } from 'date-fns/locale/pt-BR'
 import Link from 'next/link'
+import Markdown from 'react-markdown'
+import { useGithub } from '@/hooks/useGithub'
 import styles from './post.module.css'
 
 export default function PostPage({ params }: { params: { id: string } }) {

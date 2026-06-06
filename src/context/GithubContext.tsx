@@ -2,8 +2,8 @@
 /* eslint-disable camelcase */
 
 import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   useCallback,
   useEffect,
   useState,
@@ -134,8 +134,7 @@ export function GithubContextProvider({ children }: GithubContextProviderData) {
         ])
       } catch (err) {
         if (!cancelled) {
-          const normalized =
-            err instanceof Error ? err : new Error(String(err))
+          const normalized = err instanceof Error ? err : new Error(String(err))
           console.error('[GithubContext] failed to load data:', normalized)
           setError(normalized)
         }

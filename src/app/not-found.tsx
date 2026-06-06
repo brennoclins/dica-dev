@@ -1,8 +1,8 @@
 'use client'
 
+import { ArrowFatLeft } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
-import { ArrowFatLeft } from '@phosphor-icons/react/dist/ssr'
 
 import styles from './not-found.module.css'
 
