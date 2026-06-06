@@ -10,11 +10,13 @@ import {
 import { format, formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
 import Link from 'next/link'
+import { use } from 'react'
 import Markdown from 'react-markdown'
 import { useGithub } from '@/hooks/useGithub'
 import styles from './post.module.css'
 
-export default function PostPage({ params }: { params: { id: string } }) {
+export default function PostPage(props: { params: Promise<{ id: string }> }) {
+  const params = use(props.params)
   const { issues } = useGithub()
 
   const post = issues.find(post => post.number === Number(params.id))
