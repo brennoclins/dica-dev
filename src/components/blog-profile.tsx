@@ -12,7 +12,16 @@ export function BlogProfile() {
   return (
     <section className={styles.profile}>
       <div className={styles.profileAvatar}>
-        <Image src={user?.avatar_url} alt="" />
+        {user?.avatar_url && (
+          <Image
+            src={user.avatar_url}
+            alt={`Foto de perfil de ${user.name ?? user.login ?? 'usuário do GitHub'}`}
+            width={256}
+            height={256}
+            priority
+            className="h-auto w-full"
+          />
+        )}
       </div>
 
       <div className={styles.profileContent}>
