@@ -12,7 +12,7 @@ import { ptBR } from 'date-fns/locale/pt-BR'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-
+import { ArticleJsonLd } from '@/components/json-ld'
 import { RelatedPosts } from '@/components/related-posts'
 import { ShareButtons } from '@/components/share-buttons'
 import {
@@ -126,6 +126,11 @@ export default async function PostPage({ params }: PostPageProps) {
 
   return (
     <main className={styles.post}>
+      <ArticleJsonLd
+        post={post}
+        authorName={post.user.login}
+        authorUrl={post.user.html_url}
+      />
       <section className={styles.postContainer}>
         <section className={styles.postHeader}>
           <div className={styles.postHeaderButtons}>
