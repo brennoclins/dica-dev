@@ -121,8 +121,9 @@
   md:mx-20
 }
 
-.postBody h3 {
+.postBody h1, .postBody h2, .postBody h3 {
   @apply
+  mt-6
   text-xl
   font-medium
   text-white
@@ -134,14 +135,12 @@
 
 .postBody pre {
   @apply
-  p-4
-  rounded-lg
-  bg-background-gladiator
+  p-0
 }
 .postBody code {
   @apply
-  font-semibold
-  text-lg
+  font-mono
+  text-sm
 }
 
 .postBody ul {
@@ -164,4 +163,50 @@
   w-1
   h-1
   bg-base-title
+}
+
+.postBody a {
+  @apply
+  text-blue
+  underline
+  underline-offset-2
+  transition-colors
+  hover:text-link-active
+}
+
+.postBody blockquote {
+  @apply
+  my-4
+  border-l-4
+  border-red-gladiator
+  bg-base-post
+  px-4
+  py-2
+  italic
+  text-base-subtitle
+}
+
+.postBody table {
+  @apply
+  my-4
+  w-full
+  border-collapse
+  border
+  border-base-border
+}
+
+.postBody th, .postBody td {
+  @apply
+  border
+  border-base-border
+  px-3
+  py-2
+  text-left
+}
+
+.postBody th {
+  @apply
+  bg-base-profile
+  font-semibold
+  text-base-subtitle
 }

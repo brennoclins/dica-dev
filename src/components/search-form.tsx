@@ -11,19 +11,36 @@ import {
   useState,
   useTransition,
 } from 'react'
-import Markdown from 'react-markdown'
 
-import type { GithubIssue } from '@/lib/github'
+import type { GithubLabel } from '@/lib/github'
 
 import styles from './search-form.module.css'
 
+export type PostPreview = {
+  number: number
+  title: string
+  updated_at: string
+  labels: GithubLabel[]
+  previewHtml: string
+}
+
 type SearchFormProps = {
-  initialIssues: GithubIssue[]
+  initialPosts: PostPreview[]
   initialQuery?: string
 }
 
+function matches(post: PostPreview, query: string): boolean {
+  if (!query) return true
+  const lower = query.toLowerCase()
+  return (
+    post.title.toLowerCase().includes(lower) ||
+    post.previewHtml.toLowerCase().includes(lower) ||
+    post.labels.some(l => l.name.toLowerCase().includes(lower))
+  )
+}
+
 export function SearchForm({
-  initialIssues,
+  initialPosts,
   initialQuery = '',
 }: SearchFormProps) {
   const router = useRouter()
@@ -36,16 +53,10 @@ export function SearchForm({
     setSearchText(searchParams.get('q') ?? '')
   }, [searchParams])
 
-  const filteredPosts = useMemo(() => {
-    if (!searchText.trim()) return initialIssues
-    const lower = searchText.toLowerCase()
-    return initialIssues.filter(
-      post =>
-        post.title.toLowerCase().includes(lower) ||
-        post.body?.toLowerCase().includes(lower) ||
-        post.labels.some(l => l.name.toLowerCase().includes(lower))
-    )
-  }, [initialIssues, searchText])
+  const filteredPosts = useMemo(
+    () => initialPosts.filter(p => matches(p, searchText.trim().toLowerCase())),
+    [initialPosts, searchText]
+  )
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
@@ -119,19 +130,10 @@ export function SearchForm({
                     </span>
                   </header>
 
-                  <Markdown
-                    components={{
-                      a: ({ node: _, ...props }) => (
-                        <a
-                          {...props}
-                          rel="noopener noreferrer"
-                          target="_blank"
-                        />
-                      ),
-                    }}
-                  >
-                    {post.body}
-                  </Markdown>
+                  <div
+                    className={styles.postCardPreview}
+                    dangerouslySetInnerHTML={{ __html: post.previewHtml }}
+                  />
                 </div>
 
                 <footer>

@@ -9,7 +9,6 @@ import { ptBR } from 'date-fns/locale/pt-BR'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import Markdown from 'react-markdown'
 
 import {
   GithubApiError,
@@ -17,6 +16,7 @@ import {
   getGithubIssues,
   githubConfig,
 } from '@/lib/github'
+import { renderMarkdown } from '@/lib/markdown'
 
 import styles from './post.module.css'
 
@@ -101,6 +101,7 @@ export default async function PostPage({ params }: PostPageProps) {
     locale: ptBR,
     addSuffix: true,
   })
+  const bodyHtml = await renderMarkdown(post.body ?? '')
 
   return (
     <main className={styles.post}>
@@ -141,17 +142,10 @@ export default async function PostPage({ params }: PostPageProps) {
         </section>
 
         <section className={styles.postContent}>
-          <div className={styles.postBody}>
-            <Markdown
-              components={{
-                a: ({ node: _, ...props }) => (
-                  <a {...props} target="_blank" rel="noopener noreferrer" />
-                ),
-              }}
-            >
-              {post.body}
-            </Markdown>
-          </div>
+          <div
+            className={`${styles.postBody} post-body`}
+            dangerouslySetInnerHTML={{ __html: bodyHtml }}
+          />
         </section>
       </section>
     </main>

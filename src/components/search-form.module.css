@@ -138,6 +138,33 @@
   bg-background-gladiator
 }
 
+.postCardPreview {
+  @apply
+  my-4
+  max-h-72
+  overflow-hidden
+  text-ellipsis
+  text-sm
+}
+.postCardPreview p {
+  @apply
+  my-1
+  overflow-hidden
+}
+.postCardPreview pre {
+  @apply
+  p-2
+  my-2
+  overflow-hidden
+  rounded
+  bg-background-gladiator
+}
+.postCardPreview a {
+  @apply
+  text-blue
+  underline
+}
+
 .postCardLink {
   @apply
   absolute
