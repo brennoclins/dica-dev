@@ -18,10 +18,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <GithubContextProvider>
-      <html lang="pt-BR">
-        <body className={inter.className}>{children}</body>
-      </html>
-    </GithubContextProvider>
+    <html lang="pt-BR">
+      <body className={inter.className}>
+        <GithubContextProvider>{children}</GithubContextProvider>
+      </body>
+    </html>
   )
 }
