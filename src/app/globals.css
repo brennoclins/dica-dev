@@ -1,10 +1,157 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-* {
-  @apply
-  m-0
-  p-0
-  box-border
+@theme {
+  /* Brand - OKLCH for proper /opacity modifier support */
+  --color-blue: oklch(0.65 0.18 250);
+  --color-link-active: oklch(0.55 0.27 295);
+
+  /* Base palette (deep blue dark theme) */
+  --color-base-title: oklch(0.93 0.01 230);
+  --color-base-subtitle: oklch(0.83 0.02 230);
+  --color-base-text: oklch(0.75 0.03 230);
+  --color-base-span: oklch(0.62 0.04 235);
+  --color-base-label: oklch(0.42 0.05 235);
+  --color-base-border: oklch(0.27 0.04 235);
+  --color-base-post: oklch(0.18 0.03 230);
+  --color-base-profile: oklch(0.13 0.03 230);
+  --color-base-background: oklch(0.11 0.03 230);
+  --color-base-input: oklch(0.08 0.03 230);
+
+  /* Gladiator (red accent) */
+  --color-red-gladiator: oklch(0.63 0.26 27);
+  --color-post-gladiator: oklch(0.21 0.06 25);
+  --color-border-gladiator: oklch(0.25 0.08 25);
+  --color-background-gladiator: oklch(0.17 0.06 25);
+
+  /* Custom gradients reused from the old config */
+  --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
+  --background-image-gradient-conic:
+    conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    color-scheme: dark light;
+  }
+
+  body {
+    background-color: var(--color-base-background);
+    color: var(--color-base-text);
+    transition:
+      background-color 200ms ease,
+      color 200ms ease;
+  }
+}
+
+/* Light theme palette - overrides base colors when [data-theme="light"] */
+[data-theme='light'] {
+  --color-base-title: oklch(0.20 0.04 235);
+  --color-base-subtitle: oklch(0.30 0.04 235);
+  --color-base-text: oklch(0.35 0.03 235);
+  --color-base-span: oklch(0.50 0.03 235);
+  --color-base-label: oklch(0.60 0.02 235);
+  --color-base-border: oklch(0.85 0.01 235);
+  --color-base-post: oklch(0.96 0.005 230);
+  --color-base-profile: oklch(0.99 0.003 230);
+  --color-base-background: oklch(0.99 0.003 230);
+  --color-base-input: oklch(1 0 0);
+
+  --color-post-gladiator: oklch(0.92 0.04 25);
+  --color-border-gladiator: oklch(0.70 0.13 25);
+  --color-background-gladiator: oklch(0.95 0.02 25);
+
+  /* shiki dual theme: prefer light vars when in light mode */
+  color-scheme: light;
+}
+
+[data-theme='light'] body {
+  background-color: var(--color-base-background);
+  color: var(--color-base-text);
+}
+
+@layer components {
+  /* offset anchor scroll under the sticky header */
+  .post-body h1,
+  .post-body h2,
+  .post-body h3,
+  .post-body h4 {
+    scroll-margin-top: 5rem;
+  }
+
+  /* auto-linked headings via rehype-autolink-headings */
+  .post-body a.heading-anchor {
+    @apply text-inherit no-underline;
+  }
+
+  .post-body a.heading-anchor:hover {
+    @apply text-red-gladiator;
+  }
+
+  /* rehype-pretty-code figure wrapper */
+  .post-body figure[data-rehype-pretty-code-figure] {
+    @apply my-4 overflow-hidden rounded-lg border border-border-gladiator;
+  }
+
+  .post-body figure[data-rehype-pretty-code-figure] [data-rehype-pretty-code-title] {
+    @apply border-b border-border-gladiator bg-background-gladiator px-4 py-2 font-mono text-sm text-base-span;
+  }
+
+  .post-body pre[data-language] {
+    @apply overflow-x-auto p-4 font-mono text-sm leading-relaxed;
+    background-color: var(--shiki-light-bg);
+  }
+
+  .post-body code[data-theme*=' '],
+  .post-body code[data-theme*=' '] span {
+    color: var(--shiki-light);
+    background-color: var(--shiki-light-bg);
+    font-style: var(--shiki-light-font-style);
+    font-weight: var(--shiki-light-font-weight);
+    text-decoration: var(--shiki-light-text-decoration);
+  }
+
+  [data-theme='dark'] .post-body code[data-theme*=' '],
+  [data-theme='dark'] .post-body code[data-theme*=' '] span {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+  }
+
+  .post-body [data-line] {
+    @apply block min-h-[1.5rem] border-l-4 border-transparent px-4 py-0.5;
+  }
+
+  .post-body [data-highlighted-line] {
+    @apply border-l-red-gladiator bg-red-gladiator/10;
+  }
+
+  .post-body [data-highlighted-chars] {
+    @apply rounded bg-red-gladiator/20 px-0.5;
+  }
+
+  /* diff notation support: + / - prefixes colored */
+  .post-body [data-line].diff.add {
+    @apply bg-emerald-500/10;
+  }
+
+  .post-body [data-line].diff.remove {
+    @apply bg-red-gladiator/15;
+  }
+
+  /* inline code */
+  .post-body :not(pre) > code {
+    @apply rounded bg-background-gladiator px-1.5 py-0.5 font-mono text-[0.9em] text-base-text;
+    background-color: var(--shiki-light-bg);
+  }
+
+  [data-theme='dark'] .post-body :not(pre) > code {
+    background-color: var(--shiki-dark-bg);
+  }
 }

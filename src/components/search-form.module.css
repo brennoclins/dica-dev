@@ -1,3 +1,5 @@
+@reference "../app/globals.css";
+
 .searchForm {
   @apply
   relative
@@ -55,13 +57,82 @@
   text-base-text
   text-lg
   placeholder:text-base-label
-  
+
   outline-none
   duration-500
-  
+
   focus:pl-4
 
   focus:border-b-red-gladiator
+}
+
+.searchFormLabels {
+  @apply
+  flex
+  flex-wrap
+  items-center
+  gap-2
+  px-4
+  pt-1
+  text-base-span
+}
+
+.searchFormChip {
+  @apply
+  inline-flex
+  items-center
+  gap-1.5
+  px-2
+  py-1
+  text-xs
+  rounded-full
+  border
+  border-base-border
+  bg-base-input
+  text-base-text
+  cursor-pointer
+  transition-colors
+  hover:border-blue
+  hover:text-blue
+}
+
+.searchFormChipActive {
+  @apply
+  border-red-gladiator
+  bg-red-gladiator/10
+  text-red-gladiator
+}
+
+.searchFormChipCount {
+  @apply
+  text-[0.65rem]
+  opacity-60
+}
+
+.searchFormClear {
+  @apply
+  inline-flex
+  items-center
+  gap-1
+  ml-1
+  px-2
+  py-1
+  text-xs
+  rounded-full
+  text-base-span
+  hover:text-red-gladiator
+  cursor-pointer
+}
+
+.searchFormClearInline {
+  @apply
+  inline-flex
+  items-center
+  gap-1
+  ml-2
+  underline
+  text-blue
+  hover:text-red-gladiator
 }
 
 .postCardConainer {
@@ -134,6 +205,33 @@
   @apply
   p-2
   bg-background-gladiator
+}
+
+.postCardPreview {
+  @apply
+  my-4
+  max-h-72
+  overflow-hidden
+  text-ellipsis
+  text-sm
+}
+.postCardPreview p {
+  @apply
+  my-1
+  overflow-hidden
+}
+.postCardPreview pre {
+  @apply
+  p-2
+  my-2
+  overflow-hidden
+  rounded
+  bg-background-gladiator
+}
+.postCardPreview a {
+  @apply
+  text-blue
+  underline
 }
 
 .postCardLink {

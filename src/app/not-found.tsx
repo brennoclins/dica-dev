@@ -1,9 +1,13 @@
 'use client'
 
+import { ArrowFatLeft } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
-import { ArrowFatLeft } from 'phosphor-react'
+import type { CSSProperties } from 'react'
 
 import styles from './not-found.module.css'
+
+const TILE_COUNT = 10
+const TILE_INDEX_OFFSET = 11
 
 export default function NotFound() {
   return (
@@ -11,24 +15,22 @@ export default function NotFound() {
       <div className={styles.notfoundInfo}>
         <h2>Ops!</h2>
         <h1>Página não encontrada</h1>
-        <Link href={'/'}>
+        <Link href="/">
           <ArrowFatLeft size={44} color="#ff0000" weight="fill" />
           Voltar para Home
         </Link>
 
         <div className={styles.wrapper}>
-          {/* <div className="t" style={{ '--i': 1 }}></div> */}
-
-          <div className={styles.t} style={{ ['--i' as string]: 11 }} />
-          <div className={styles.t} style={{ ['--i' as string]: 12 }} />
-          <div className={styles.t} style={{ ['--i' as string]: 13 }} />
-          <div className={styles.t} style={{ ['--i' as string]: 14 }} />
-          <div className={styles.t} style={{ ['--i' as string]: 15 }} />
-          <div className={styles.t} style={{ ['--i' as string]: 16 }} />
-          <div className={styles.t} style={{ ['--i' as string]: 17 }} />
-          <div className={styles.t} style={{ ['--i' as string]: 18 }} />
-          <div className={styles.t} style={{ ['--i' as string]: 19 }} />
-          <div className={styles.t} style={{ ['--i' as string]: 20 }} />
+          {Array.from({ length: TILE_COUNT }, (_, idx) => {
+            const i = idx + TILE_INDEX_OFFSET
+            return (
+              <div
+                key={i}
+                className={styles.t}
+                style={{ '--i': i } as CSSProperties}
+              />
+            )
+          })}
         </div>
       </div>
     </section>

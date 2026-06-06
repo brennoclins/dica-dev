@@ -1,0 +1,99 @@
+@reference "../app/globals.css";
+
+.related {
+  @apply
+  mt-8
+  mx-2
+  md:mx-20
+  p-4
+  border-t
+  border-base-border
+}
+
+.relatedTitle {
+  @apply
+  mb-4
+  text-base-subtitle
+  font-semibold
+  text-sm
+  uppercase
+  tracking-wider
+}
+
+.relatedList {
+  @apply
+  flex
+  flex-col
+  gap-2
+  list-none
+  m-0
+  p-0
+}
+
+.relatedItem {
+  @apply
+  rounded-lg
+  border
+  border-base-border
+  bg-base-profile
+  transition-colors
+  hover:border-red-gladiator
+}
+
+.relatedLink {
+  @apply
+  flex
+  items-center
+  justify-between
+  gap-3
+  p-3
+  text-base-text
+  no-underline
+}
+
+.relatedContent {
+  @apply
+  flex-1
+  min-w-0
+}
+
+.relatedPostTitle {
+  @apply
+  text-sm
+  font-semibold
+  text-base-title
+  truncate
+}
+
+.relatedMeta {
+  @apply
+  mt-1
+  text-xs
+  text-base-span
+}
+
+.relatedLabels {
+  @apply
+  mt-1
+  flex
+  flex-wrap
+  gap-1
+}
+
+.relatedLabel {
+  @apply
+  text-[0.65rem]
+  px-1.5
+  py-0.5
+  rounded
+  bg-base-input
+  text-base-span
+}
+
+.relatedArrow {
+  @apply
+  text-base-span
+  flex-shrink-0
+  transition-transform
+  group-hover:translate-x-1
+}

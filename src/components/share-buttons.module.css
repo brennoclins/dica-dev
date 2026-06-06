@@ -1,0 +1,55 @@
+@reference "../app/globals.css";
+
+.share {
+  @apply
+  flex
+  items-center
+  gap-3
+  py-2
+}
+
+.shareTitle {
+  @apply
+  text-xs
+  uppercase
+  tracking-wider
+  text-base-span
+  font-semibold
+}
+
+.shareButtons {
+  @apply
+  flex
+  items-center
+  gap-1
+}
+
+.shareButton {
+  @apply
+  inline-flex
+  h-9
+  w-9
+  items-center
+  justify-center
+  rounded-full
+  border
+  border-base-border
+  bg-base-input
+  text-base-text
+  cursor-pointer
+  transition-colors
+  hover:border-blue
+  hover:text-blue
+  hover:bg-blue/10
+}
+
+.shareButtonCopied {
+  @apply
+  !border-red-gladiator
+  !text-red-gladiator
+  !bg-red-gladiator/10
+  w-auto
+  px-3
+  text-xs
+  font-semibold
+}

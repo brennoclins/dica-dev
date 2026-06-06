@@ -1,0 +1,64 @@
+@reference "../app/globals.css";
+
+.notice {
+  @apply
+  mx-2
+  md:mx-12
+  p-4
+  md:p-6
+  rounded-lg
+  border
+  border-red-gladiator
+  bg-background-gladiator
+  text-base-text
+}
+
+.noticeContent {
+  @apply
+  flex
+  flex-col
+  gap-2
+}
+
+.noticeTitle {
+  @apply
+  text-lg
+  font-semibold
+  text-red-gladiator
+}
+
+.noticeText {
+  @apply
+  text-sm
+  text-base-subtitle
+}
+
+.noticeHint {
+  @apply
+  text-sm
+  text-base-span
+  mt-2
+}
+
+.noticeCode {
+  @apply
+  p-2
+  rounded
+  bg-base-input
+  text-base-text
+  text-xs
+  overflow-x-auto
+  border
+  border-base-border
+}
+
+.noticeLink {
+  @apply
+  inline-block
+  mt-2
+  text-sm
+  text-blue
+  underline
+  self-start
+  hover:text-link-active
+}

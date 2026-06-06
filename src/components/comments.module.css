@@ -1,0 +1,41 @@
+@reference "../app/globals.css";
+
+.comments {
+  @apply
+  mt-8
+  mx-2
+  md:mx-20
+  p-4
+  border-t
+  border-base-border
+}
+
+.commentsTitle {
+  @apply
+  flex
+  items-center
+  gap-2
+  mb-2
+  text-base-subtitle
+  font-semibold
+  text-sm
+  uppercase
+  tracking-wider
+}
+
+.commentsHint {
+  @apply
+  text-xs
+  text-base-span
+  mb-4
+}
+
+.commentsLoading {
+  @apply
+  p-8
+  text-center
+  text-base-span
+  border
+  border-base-border
+  rounded-lg
+}
