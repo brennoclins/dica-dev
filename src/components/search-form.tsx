@@ -1,5 +1,6 @@
 'use client'
 
+import { ArrowSquareOut, Tag, X } from '@phosphor-icons/react/dist/ssr'
 import { format, formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
 import Link from 'next/link'
@@ -27,9 +28,13 @@ export type PostPreview = {
 type SearchFormProps = {
   initialPosts: PostPreview[]
   initialQuery?: string
+  activeLabel?: string
 }
 
-function matches(post: PostPreview, query: string): boolean {
+function matches(post: PostPreview, query: string, label: string): boolean {
+  if (label && !post.labels.some(l => l.name === label)) {
+    return false
+  }
   if (!query) return true
   const lower = query.toLowerCase()
   return (
@@ -42,6 +47,7 @@ function matches(post: PostPreview, query: string): boolean {
 export function SearchForm({
   initialPosts,
   initialQuery = '',
+  activeLabel = '',
 }: SearchFormProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -53,19 +59,51 @@ export function SearchForm({
     setSearchText(searchParams.get('q') ?? '')
   }, [searchParams])
 
+  const allLabels = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const post of initialPosts) {
+      for (const label of post.labels) {
+        map.set(label.name, (map.get(label.name) ?? 0) + 1)
+      }
+    }
+    return Array.from(map.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+  }, [initialPosts])
+
   const filteredPosts = useMemo(
-    () => initialPosts.filter(p => matches(p, searchText.trim().toLowerCase())),
-    [initialPosts, searchText]
+    () =>
+      initialPosts.filter(p =>
+        matches(p, searchText.trim().toLowerCase(), activeLabel)
+      ),
+    [initialPosts, searchText, activeLabel]
   )
+
+  function setParam(key: 'q' | 'label', value: string) {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value) params.set(key, value)
+    else params.delete(key)
+    return params.toString()
+  }
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
     startTransition(() => {
-      const params = new URLSearchParams(searchParams.toString())
-      const trimmed = searchText.trim()
-      if (trimmed) params.set('q', trimmed)
-      else params.delete('q')
-      router.replace(`/?${params.toString()}`, { scroll: false })
+      router.replace(`/?${setParam('q', searchText.trim())}`, { scroll: false })
+    })
+  }
+
+  function handleLabelClick(label: string) {
+    startTransition(() => {
+      const next = activeLabel === label ? '' : label
+      router.replace(`/?${setParam('label', next)}`, { scroll: false })
+    })
+  }
+
+  function handleClear() {
+    setSearchText('')
+    startTransition(() => {
+      router.replace('/', { scroll: false })
     })
   }
 
@@ -91,6 +129,43 @@ export function SearchForm({
             aria-label="Buscar publicações"
           />
         </form>
+
+        {allLabels.length > 0 && (
+          <div
+            className={styles.searchFormLabels}
+            role="group"
+            aria-label="Filtrar por categoria"
+          >
+            <Tag size={18} aria-hidden />
+            {allLabels.map(({ name, count }) => {
+              const isActive = activeLabel === name
+              return (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => handleLabelClick(name)}
+                  aria-pressed={isActive}
+                  className={`${styles.searchFormChip} ${
+                    isActive ? styles.searchFormChipActive : ''
+                  }`}
+                >
+                  {name}
+                  <span className={styles.searchFormChipCount}>{count}</span>
+                </button>
+              )
+            })}
+            {(activeLabel || searchText) && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className={styles.searchFormClear}
+                title="Limpar filtros"
+              >
+                <X size={14} weight="bold" /> Limpar
+              </button>
+            )}
+          </div>
+        )}
       </section>
 
       <section
@@ -100,7 +175,18 @@ export function SearchForm({
       >
         {filteredPosts.length === 0 ? (
           <p className="col-span-full p-8 text-center text-base-span">
-            Nenhuma publicação encontrada para "{searchText}".
+            Nenhuma publicação encontrada
+            {searchText && ` para "${searchText}"`}
+            {activeLabel && ` com a label "${activeLabel}"`}.
+            {(searchText || activeLabel) && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className={styles.searchFormClearInline}
+              >
+                <ArrowSquareOut size={14} /> Limpar filtros
+              </button>
+            )}
           </p>
         ) : (
           filteredPosts.map(post => {

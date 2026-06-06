@@ -40,6 +40,23 @@
 }
 
 @layer components {
+  /* offset anchor scroll under the sticky header */
+  .post-body h1,
+  .post-body h2,
+  .post-body h3,
+  .post-body h4 {
+    scroll-margin-top: 5rem;
+  }
+
+  /* auto-linked headings via rehype-autolink-headings */
+  .post-body a.heading-anchor {
+    @apply text-inherit no-underline;
+  }
+
+  .post-body a.heading-anchor:hover {
+    @apply text-red-gladiator;
+  }
+
   /* rehype-pretty-code figure wrapper */
   .post-body figure[data-rehype-pretty-code-figure] {
     @apply my-4 overflow-hidden rounded-lg border border-border-gladiator;

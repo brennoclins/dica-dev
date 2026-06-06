@@ -112,6 +112,112 @@
 
 }
 
+.postToc {
+  @apply
+  sticky
+  top-2
+  z-10
+  mx-2
+  mt-4
+  md:mx-20
+  p-4
+  rounded-lg
+  border
+  border-base-border
+  bg-base-profile/80
+  backdrop-blur-sm
+}
+
+.postTocTitle {
+  @apply
+  flex
+  items-center
+  gap-2
+  mb-3
+  text-base-subtitle
+  font-semibold
+  text-sm
+  uppercase
+  tracking-wider
+}
+
+.postTocList {
+  @apply
+  flex
+  flex-col
+  gap-1
+  list-none
+  m-0
+  p-0
+}
+
+.postTocItem a {
+  @apply
+  block
+  py-1
+  text-sm
+  text-base-text
+  transition-colors
+  hover:text-red-gladiator
+  hover:translate-x-1
+}
+
+.postTocItem.postTocSub a {
+  @apply
+  pl-4
+  text-base-span
+  text-xs
+}
+
+.postFooter {
+  @apply
+  mt-8
+  mx-2
+  md:mx-20
+  p-4
+  border-t
+  border-base-border
+}
+
+.postFooterTitle {
+  @apply
+  flex
+  items-center
+  gap-2
+  mb-3
+  text-base-subtitle
+  font-semibold
+  text-sm
+  uppercase
+  tracking-wider
+}
+
+.postFooterLabels {
+  @apply
+  flex
+  flex-wrap
+  gap-2
+  list-none
+  m-0
+  p-0
+}
+
+.postFooterLabels li a {
+  @apply
+  inline-block
+  px-3
+  py-1
+  text-xs
+  rounded-full
+  bg-base-input
+  text-base-text
+  border
+  border-base-border
+  transition-colors
+  hover:border-red-gladiator
+  hover:text-red-gladiator
+}
+
 .postBody {
   @apply
   flex

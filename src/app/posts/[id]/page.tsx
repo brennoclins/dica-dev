@@ -1,8 +1,11 @@
 import {
+  BookOpen,
   CalendarBlank,
   CaretLeft,
   ChatCircle,
+  Clock,
   GithubLogo,
+  ListChecks,
 } from '@phosphor-icons/react/dist/ssr'
 import { format, formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
@@ -16,7 +19,7 @@ import {
   getGithubIssues,
   githubConfig,
 } from '@/lib/github'
-import { renderMarkdown } from '@/lib/markdown'
+import { extractToc, readingTime, renderMarkdown } from '@/lib/markdown'
 
 import styles from './post.module.css'
 
@@ -108,6 +111,8 @@ export default async function PostPage({ params }: PostPageProps) {
     addSuffix: true,
   })
   const bodyHtml = await renderMarkdown(post.body ?? '')
+  const toc = extractToc(post.body ?? '')
+  const readTime = readingTime(post.body ?? '')
 
   return (
     <main className={styles.post}>
@@ -139,6 +144,10 @@ export default async function PostPage({ params }: PostPageProps) {
               </time>
             </span>
             <span>
+              <Clock size={22} />
+              {readTime.text}
+            </span>
+            <span>
               <ChatCircle size={22} />
               {post.comments === 1
                 ? `${post.comments} comentário`
@@ -148,10 +157,50 @@ export default async function PostPage({ params }: PostPageProps) {
         </section>
 
         <section className={styles.postContent}>
+          {toc.length > 0 && (
+            <aside className={styles.postToc} aria-label="Sumario do artigo">
+              <h3 className={styles.postTocTitle}>
+                <ListChecks size={20} /> Sumario
+              </h3>
+              <nav>
+                <ol className={styles.postTocList}>
+                  {toc.map(item => (
+                    <li
+                      key={item.id}
+                      className={`${styles.postTocItem} ${item.level === 3 ? styles.postTocSub : ''}`}
+                    >
+                      <a href={`#${item.id}`}>{item.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            </aside>
+          )}
+
           <div
             className={`${styles.postBody} post-body`}
             dangerouslySetInnerHTML={{ __html: bodyHtml }}
           />
+
+          {post.labels.length > 0 && (
+            <footer className={styles.postFooter}>
+              <h3 className={styles.postFooterTitle}>
+                <BookOpen size={20} /> Tags
+              </h3>
+              <ul className={styles.postFooterLabels}>
+                {post.labels.map(label => (
+                  <li key={label.id}>
+                    <Link
+                      href={`/?label=${encodeURIComponent(label.name)}`}
+                      title={`Filtrar por ${label.name}`}
+                    >
+                      {label.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </footer>
+          )}
         </section>
       </section>
     </main>
