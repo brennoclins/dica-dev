@@ -27,12 +27,12 @@ Cada entrada abaixo documenta uma fase da modernizacao, com foco em:
 | 09 | [Engagement: Share + Related Posts](#09--engagement-share--related-posts) | Feature | OK |
 | 10 | [PWA + BlogProfile reativado](#10--pwa--blogprofile-reativado) | Feature | OK |
 | 11 | [DX: Vitest + Husky + CI](#11--dx-vitest--husky--ci) | DX | OK |
-| 12 | [i18n](#12--i18n) | Feature | Pendente |
-| 13 | [Comentarios Giscus](#13--comentarios-giscus) | Feature | Pendente |
-| 14 | [Tema dark/light (next-themes)](#14--tema-darklight-next-themes) | Feature | Pendente |
-| 15 | [Sentry + Observabilidade](#15--sentry--observabilidade) | DX | Pendente |
-| 16 | [Substituir Python helper por scripts npm](#16--substituir-python-helper-por-scripts-npm) | DX | Pendente |
-| 17 | [Playwright e2e](#17--playwright-e2e) | DX | Pendente |
+| 11b | [Theme dark/light + Rate-Limit graceful degradation](#11b--theme-darklight--rate-limit-graceful-degradation) | Feature | OK |
+| 12 | [i18n lite (PT-BR/EN)](#12--i18n-lite-pt-bren) | Feature | OK |
+| 13 | [Comentarios Giscus](#13--comentarios-giscus) | Feature | OK |
+| 14 | [Sentry + Observabilidade](#14--sentry--observabilidade) | DX | OK |
+| 15 | [Substituir Python helper por script Node](#15--substituir-python-helper-por-script-node) | DX | OK |
+| 16 | [Playwright e2e](#16--playwright-e2e) | DX | OK |
 
 ---
 
@@ -510,3 +510,192 @@ pnpm typecheck && pnpm test && pnpm lint && pnpm build
 | 15 | Sentry | `@sentry/nextjs` com source maps + `tunnelRoute` | 2h |
 | 16 | Python helper | Substituir `scripts/post.py` por `tsx scripts/post.ts` ou `node --experimental-strip-types` | 1h |
 | 17 | Playwright | E2E para home search, post page, label filter, RSS link | 3h |
+
+---
+
+## 11b - Theme dark/light + Rate-Limit graceful degradation
+
+**Data**: 2026-06-06
+**Tipo**: Feature
+
+### O que mudou
+
+#### Rate-limit graceful degradation
+- `src/lib/github.ts`: novos `getGithubIssuesSafe()` e `getGithubUserSafe()` que capturam `GithubApiError` e retornam `{ issues, error }` ou `null`
+- `src/app/page.tsx`: usa as variantes safe. Quando a API esta rate-limited, renderiza um aviso amigavel em vez de derrubar a arvore React
+- `src/components/rate-limit-notice.tsx` (novo): banner com instrucoes para adicionar `GITHUB_TOKEN` no `.env.local`
+- `src/app/posts/[id]/page.tsx`: tambem captura `GithubApiError`, loga warning em dev, ainda re-lanca para o ErrorBoundary do Next.js
+
+#### Theme toggle (next-themes)
+- `src/components/theme-provider.tsx` (Client): wrappa `NextThemesProvider` com `attribute="data-theme"`, `defaultTheme="dark"`, `enableSystem`
+- `src/components/theme-toggle.tsx` (Client): botao Sun/Moon com `useTheme()`; flag `mounted` evita hydration mismatch
+- `src/components/theme-toggle.module.css`
+- `src/app/layout.tsx`: wrappa body com `ThemeProvider`, adiciona `suppressHydrationWarning` no `<html>`
+- `src/app/globals.css`:
+  - Bloco `[data-theme='light']` com paleta OKLCH invertida
+  - Seletores `[data-theme='dark']` / `[data-theme='light']` para shiki dual theme
+  - Transicao de background/color no body (200ms ease)
+  - `html { color-scheme: dark light }`
+- `src/lib/markdown.ts`: `PRETTY_CODE_OPTIONS` agora usa `{ dark: 'github-dark-dimmed', light: 'github-light' }` (shiki dual)
+- `src/app/page.tsx`: `<header>` com `<ThemeToggle/>` no topo
+- `src/app/posts/[id]/page.tsx`: `<ThemeToggle/>` no `.postHeaderButtons`
+
+### Como verificar
+```bash
+rm -rf .next && pnpm build
+# esperado: build sem erros, mesmo sem GITHUB_TOKEN (rate-limit nao quebra)
+```
+
+---
+
+## 12 - i18n lite (PT-BR/EN)
+
+**Data**: 2026-06-06
+**Tipo**: Feature
+
+### O que mudou
+
+#### Novo: `src/lib/i18n.ts`
+- `SUPPORTED_LOCALES = ['pt-BR', 'en']`, `DEFAULT_LOCALE = 'pt-BR'`
+- Dois dicionarios paralelos (PT-BR, EN) com ~35 chaves cada
+- `createTranslator(locale)` retorna `t(key, values?)` com interpolacao
+- `resolveLocale(input)`, `isLocale(value)` type guard
+
+#### Novo: `src/components/language-switcher.tsx` (Client)
+- Pill group com PT/EN links
+- Preserva `q` e `label` ao trocar de idioma via `useSearchParams`
+
+#### Novo: `src/lib/i18n.test.ts`
+- 13 testes cobrindo `resolveLocale`, `isLocale`, `createTranslator`
+
+#### Atualizado: `src/app/page.tsx`
+- Le `?lang=`, resolve locale, renderiza `<LanguageSwitcher>`
+
+#### Atualizado: `src/components/search-form.tsx`
+- Nova prop `locale`, usa `t()` para titulo, count, placeholder, empty state, etc.
+
+### Como verificar
+```bash
+pnpm test
+# esperado: 29/29 (16 markdown + 13 i18n)
+```
+
+---
+
+## 13 - Comentarios Giscus
+
+**Data**: 2026-06-06
+**Tipo**: Feature
+
+### O que mudou
+
+#### Novo: `src/components/comments.tsx` (Client)
+- `@giscus/react` com `mapping='number'` (1 Discussion por post)
+- Theme sincronizado com `next-themes` (`light` / `dark_dimmed`)
+- Flag `mounted` para evitar hydration mismatch
+- Lazy iframe loading
+
+#### Atualizado: `src/app/posts/[id]/page.tsx`
+- Renderiza `<Comments>` apos `<RelatedPosts>`
+
+#### Atualizado: `.env.local.example`
+- Documenta `NEXT_PUBLIC_GISCUS_REPO_ID`, `NEXT_PUBLIC_GISCUS_CATEGORY`, `NEXT_PUBLIC_GISCUS_CATEGORY_ID`
+
+### Como verificar
+1. Habilitar Discussions no GitHub repo
+2. Configurar IDs no `.env.local` (https://giscus.app)
+3. Abrir `/posts/<id>` e ver widget de comentarios
+
+---
+
+## 14 - Sentry + Observabilidade
+
+**Data**: 2026-06-06
+**Tipo**: DX
+
+### O que mudou
+
+#### Novo: Sentry SDK
+- `sentry.server.config.ts`, `sentry.client.config.ts`, `instrumentation.ts` (Edge runtime)
+- `next.config.mjs`: wrappa config com `withSentryConfig` quando `SENTRY_DSN` setado
+- `ignoreErrors`: rate limit, AbortError, NEXT_NOT_FOUND, NEXT_REDIRECT
+- `enabled: process.env.NODE_ENV === 'production'` (dev nunca envia)
+- `pnpm-workspace.yaml`: `allowBuilds: @sentry/cli: true` (binary download)
+
+#### Atualizado: `.env.local.example`
+- Documenta `SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN`, `TRACES_SAMPLE_RATE`
+
+### Como verificar
+```bash
+SENTRY_DSN=https://xxx pnpm build
+# esperado: source maps uploadados, sentry-cli binary instalado
+```
+
+---
+
+## 15 - Substituir Python helper por script Node
+
+**Data**: 2026-06-06
+**Tipo**: DX
+
+### O que mudou
+
+#### Deletado: `bcl__update_outdated_in_reactjs_project.py`
+#### Novo: `scripts/update-outdated.mjs` (Node, sem deps)
+- Detecta pm via `pnpm-lock.yaml` ou `package-lock.yaml`
+- Roda `<pm> outdated` e `<pm> update`
+- Se houve atualizacao, faz `git add package.json pnpm-lock.yaml && git commit`
+
+#### Atualizado: `package.json`
+- Script: `update:outdated`
+
+### Como verificar
+```bash
+node scripts/update-outdated.mjs
+# ou
+pnpm update:outdated
+```
+
+---
+
+## 16 - Playwright e2e
+
+**Data**: 2026-06-06
+**Tipo**: DX
+
+### O que mudou
+
+#### Novo: `playwright.config.ts`
+- Projects: `chromium` (Desktop Chrome) e `mobile-chrome` (Pixel 5)
+- `webServer: pnpm dev` com `BASE_URL` override para CI
+- Trace + screenshot on failure
+
+#### Novo: `tests/e2e/home.spec.ts` (6 testes)
+- Renderiza titulo Dica Dev
+- Search input visivel
+- Theme toggle flips `data-theme`
+- Search atualiza `?q=` na URL
+- Label chips renderizam
+- 404 retorna 404 status
+- SEO endpoints: sitemap, robots, feed, manifest
+
+#### Novo: `tests/e2e/post.spec.ts` (5 testes)
+- `/posts/not-a-number` retorna 404
+- Pagina 404 tem link Voltar
+- Share buttons visiveis
+- Reading time label visivel
+- JSON-LD `<script>` presente
+
+#### Atualizado: `package.json`
+- Scripts: `e2e`, `e2e:ui`, `e2e:install`
+
+#### Atualizado: `.github/workflows/ci.yml`
+- Em pull_request: instala Playwright browsers, roda `pnpm e2e`
+- Upload de `playwright-report` em caso de falha
+
+### Como verificar
+```bash
+pnpm e2e:install
+pnpm e2e
+# esperado: 11 testes passam
+```
