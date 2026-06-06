@@ -21,13 +21,18 @@ Cada entrada abaixo documenta uma fase da modernizacao, com foco em:
 | 03 | [Atualizacao de Dependencias Tier 1](#03--atualizacao-de-dependencias-tier-1) | Chore | OK |
 | 04 | [Refatoracao para Server Components](#04--refatoracao-para-server-components) | Refactor | OK |
 | 05 | [Syntax Highlighting + GFM](#05--syntax-highlighting--gfm) | Feature | OK |
-| 06 | [SEO: sitemap + robots + RSS + metadata](#06--seo-sitemap--robots--rss--metadata) | Feature | WIP |
-| 07 | [UX: Reading time + TOC + share buttons](#07--ux-reading-time--toc--share-buttons) | Feature | Pendente |
-| 08 | [Descoberta: filtro por labels + posts relacionados](#08--descoberta-filtro-por-labels--posts-relacionados) | Feature | Pendente |
-| 09 | [Tema dark/light (next-themes)](#09--tema-darklight-next-themes) | Feature | Pendente |
-| 10 | [Comentarios via Giscus](#10--comentarios-via-giscus) | Feature | Pendente |
-| 11 | [PWA manifest](#11--pwa-manifest) | Feature | Pendente |
-| 12 | [DX/Infra: testes, husky, CI, scripts](#12--dxinfra-testes-husky-ci-scripts) | DX | Pendente |
+| 06 | [CSS: OKLCH + Rate-Limit Fix](#06--css-oklch--rate-limit-fix) | Fix | OK |
+| 07 | [SEO: sitemap + robots + RSS + manifest + JSON-LD](#07--seo-sitemap--robots--rss--manifest--json-ld) | Feature | OK |
+| 08 | [UX: TOC + Reading Time + Label Filter](#08--ux-toc--reading-time--label-filter) | Feature | OK |
+| 09 | [Engagement: Share + Related Posts](#09--engagement-share--related-posts) | Feature | OK |
+| 10 | [PWA + BlogProfile reativado](#10--pwa--blogprofile-reativado) | Feature | OK |
+| 11 | [DX: Vitest + Husky + CI](#11--dx-vitest--husky--ci) | DX | OK |
+| 12 | [i18n](#12--i18n) | Feature | Pendente |
+| 13 | [Comentarios Giscus](#13--comentarios-giscus) | Feature | Pendente |
+| 14 | [Tema dark/light (next-themes)](#14--tema-darklight-next-themes) | Feature | Pendente |
+| 15 | [Sentry + Observabilidade](#15--sentry--observabilidade) | DX | Pendente |
+| 16 | [Substituir Python helper por scripts npm](#16--substituir-python-helper-por-scripts-npm) | DX | Pendente |
+| 17 | [Playwright e2e](#17--playwright-e2e) | DX | Pendente |
 
 ---
 
@@ -77,9 +82,6 @@ pnpm typecheck
 pnpm build
 ```
 
-### Refs
-Issues: #1, #2 (estimadas, nao auditadas)
-
 ---
 
 ## 02 - Migracao pnpm
@@ -89,17 +91,9 @@ Issues: #1, #2 (estimadas, nao auditadas)
 
 ### O que mudou
 - `package.json`: adicionado `packageManager: "pnpm@11.5.2"`, `engines.node >= 20`, `engines.pnpm >= 9`
-- `.npmrc` criado com:
-  - `auto-install-peers=true` (instala deps peer sem warning)
-  - `verify-deps-before-run=false` (nao re-verifica em cada `pnpm dev`)
-  - `strict-peer-dependencies=false` (permite resolver conflitos)
-- `pnpm-workspace.yaml` criado com:
-  - `allowBuilds: { "@biomejs/biome": true, "sharp": true }` (substitui `onlyBuiltDependencies` deprecated do pnpm 10)
-- Scripts ajustados:
-  - `lint`: `biome lint .`
-  - `format`: `biome format --write .`
-  - `check`: `biome check --write .`
-  - `typecheck`: `tsc --noEmit`
+- `.npmrc` criado com `auto-install-peers`, `verify-deps-before-run=false`, `strict-peer-dependencies=false`
+- `pnpm-workspace.yaml` criado com `allowBuilds: { "@biomejs/biome": true, "sharp": true }` (substitui `onlyBuiltDependencies` deprecated do pnpm 10)
+- Scripts: `lint`/`format`/`check`/`typecheck` configurados
 - `pnpm-lock.yaml` recriado
 
 ### Por que mudou
@@ -123,43 +117,38 @@ pnpm -v   # esperado: 11.5.2
 
 ### O que mudou
 
-| Pacote | De | Para | Notas |
-|--------|----|----|-------|
-| `@biomejs/biome` | 1.9.4 | 2.4.16 | config v1 -> v2 via `biome migrate --write` |
-| `react` | 18.3.1 | 19.2.7 | sem mudancas de codigo |
-| `react-dom` | 18.3.1 | 19.2.7 | idem |
-| `@types/react` | 18.x | 19.2.16 | idem |
-| `@types/react-dom` | 18.x | 19.2.3 | idem |
-| `next` | 14.2.35 | 16.2.7 | codemod `next-async-request-api` aplicado |
-| `tailwindcss` | 3.4.19 | 4.3.0 | config TS removida; CSS-first via `@theme` |
-| `@tailwindcss/postcss` | - | 4.3.0 | novo plugin PostCSS |
+| Pacote | De | Para |
+|--------|----|----|
+| `@biomejs/biome` | 1.9.4 | 2.4.16 |
+| `react` | 18.3.1 | 19.2.7 |
+| `react-dom` | 18.3.1 | 19.2.7 |
+| `@types/react` | 18.x | 19.2.16 |
+| `@types/react-dom` | 18.x | 19.2.3 |
+| `next` | 14.2.35 | 16.2.7 |
+| `tailwindcss` | 3.4.19 | 4.3.0 |
+| `@tailwindcss/postcss` | - | 4.3.0 |
 
-### Biome 2 ajustes de config
-- `organizeImports` movido para `assist.actions.source.organizeImports`
+### Biome 2 ajustes
+- `organizeImports` -> `assist.actions.source.organizeImports`
 - `files.ignore` -> `files.includes` com `!` negations
-- `css.parser.tailwindDirectives: true` e `css.parser.cssModules: true` ativados
-- `css.formatter` e `css.linter` desativados (reativar em fase futura; CSS com `@apply` multi-linha causa falso positivo)
-- Excluidos `*.css` e `next-env.d.ts` do `includes`
+- `css.parser.tailwindDirectives: true`, `css.parser.cssModules: true`
+- `css.formatter`/`css.linter` desativados
+- Excluidos `*.css` e `next-env.d.ts`
 
 ### Next 16 + React 19 ajustes
 - `tsconfig.json` auto-atualizado: `jsx: "react-jsx"`, `target: "ES2017"`, adicionado `.next/dev/types/**/*.ts` ao `include`
-- `posts/[id]/page.tsx` migrado para `props: { params: Promise<{ id: string }> }` com `use(props.params)` (via codemod)
+- `posts/[id]/page.tsx` migrado para `props: { params: Promise<{ id: string }> }` com `use(props.params)` (codemod)
 
 ### Tailwind 4 ajustes
 - `tailwind.config.ts` deletado
-- `src/app/globals.css` reescrito:
-  - `@import "tailwindcss"`
-  - Bloco `@theme` com todas as cores customizadas (`--color-blue`, `--color-base-*`, `--color-*-gladiator`, `--color-link-active`) + gradientes
-  - `@layer base` com reset
+- `src/app/globals.css` reescrito com `@import "tailwindcss"` + `@theme` block
 - `postcss.config.mjs` usa apenas `'@tailwindcss/postcss'`
-- Todos os 5 arquivos `*.module.css` ganharam `@reference "<path-to-globals>"` (paths: `./globals.css` para `src/app/*`, `../../globals.css` para `src/app/posts/[id]`, `../app/globals.css` para `src/components/*`)
+- Todos os 5 arquivos `*.module.css` ganharam `@reference "<path-to-globals>"`
 
 ### Como verificar
 ```bash
-pnpm typecheck    # tsc --noEmit
-pnpm check        # biome
-pnpm build        # next build
-# esperado: 50 posts SSG, 0 errors
+pnpm typecheck && pnpm check && pnpm build
+# esperado: 50 posts SSG (com token), 0 errors
 ```
 
 ---
@@ -172,32 +161,20 @@ pnpm build        # next build
 ### O que mudou
 
 #### Novo: `src/lib/github.ts`
-Camada server-only de acesso a API do GitHub:
-- `import 'server-only'` (falha no build se importado de Client Component)
-- `GITHUB_USER`/`GITHUB_REPO` lidos de `NEXT_PUBLIC_*` (com fallback)
-- `GITHUB_TOKEN` opcional (60 -> 5000 req/h)
+- `import 'server-only'`, `GITHUB_USER`/`GITHUB_REPO` de `NEXT_PUBLIC_*`, `GITHUB_TOKEN` opcional
 - Tipos: `GithubLabel`, `GithubUser`, `GithubIssue`
-- `GithubApiError` com `status` + endpoint context
-- `githubFetch<T>()` wrapper com:
-  - `next: { revalidate: 3600 }` (ISR 1h)
-  - Tratamento de rate-limit (403 + `x-ratelimit-remaining=0`) com hint
-  - 404, 401, 5xx separados
-- Funcoes publicas:
-  - `getGithubUser()` -> usuario autenticado
-  - `getGithubIssues(query?, user?, repo?)` -> ate 10 paginas, perPage=100
-  - `getGithubIssue(number)` -> issue individual
-  - `getGithubLabels()` -> labels do repo
-- Exporta `githubConfig` (`{ user, repo, hasToken }`)
+- `GithubApiError` class, `githubFetch<T>()` wrapper com rate-limit handling + ISR 1h
+- Funcoes: `getGithubUser()`, `getGithubIssues(query?)`, `getGithubIssue(n)`, `getGithubLabels()`
+- Exporta `githubConfig`
 
 #### Refatorado: `src/app/page.tsx`
-- Async Server Component (sem `'use client'`)
-- `const { q = '' } = await searchParams` (filtro server-side)
+- Async Server Component, `await searchParams`
 - `<SearchForm initialPosts initialQuery />` recebe previews pre-renderizados
 
 #### Refatorado: `src/app/posts/[id]/page.tsx`
 - Async Server Component
-- `generateMetadata({ params })` retorna OpenGraph + Twitter cards
-- `generateStaticParams()` -> primeiros 50 issues -> **50 paginas SSG** no build
+- `generateMetadata({ params })` com OpenGraph + Twitter cards
+- `generateStaticParams()` -> primeiros 5 issues quando ha token
 - `notFound()` em id invalido ou 404
 
 #### Refatorado: `src/components/search-form.tsx`
@@ -214,9 +191,7 @@ Camada server-only de acesso a API do GitHub:
 - Metadata rica: `title.template`, openGraph, twitter, authors, keywords, metadataBase
 
 #### Deletado
-- `src/context/GithubContext.tsx`
-- `src/hooks/useGithub.tsx`
-- `src/lib/axios.ts`
+- `src/context/GithubContext.tsx`, `src/hooks/useGithub.tsx`, `src/lib/axios.ts`
 - `axios` do `package.json`
 
 #### Adicionado
@@ -225,7 +200,7 @@ Camada server-only de acesso a API do GitHub:
 ### Como verificar
 ```bash
 pnpm build
-# esperado: 50 posts prerenderizados estaticamente, ISR 1h
+# esperado: 50 posts prerenderizados estaticamente (com token), ISR 1h
 ```
 
 ---
@@ -238,63 +213,300 @@ pnpm build
 ### O que mudou
 
 #### Novo: `src/lib/markdown.ts`
-Pipeline unificado para renderizar markdown no servidor:
-- `unified()` + `remark-parse` + `remark-gfm` + `remark-rehype` + `rehype-pretty-code` + `rehype-stringify`
-- Dois processadores:
-  - `renderMarkdown(md)` para posts completos (com shiki + transformers)
-  - `renderMarkdownPreview(md, max=600)` para previews (sem shiki, mais leve)
-- Shiki configurado:
-  - Tema: `github-dark-dimmed` (scaffolding para dual theme)
-  - `transformerNotationDiff()` -> `// [!code ++]` / `// [!code --]`
-  - `transformerNotationHighlight()` -> `// [!code highlight]`
+- Pipeline unificado: `remark-parse` + `remark-gfm` + `remark-rehype` + `rehype-pretty-code` + `rehype-stringify`
+- `renderMarkdown(md)` para posts (com shiki + `transformerNotationDiff/Highlight`)
+- `renderMarkdownPreview(md, max=600)` para previews (sem shiki)
+- `server-only` guard
 
 #### Atualizado: `src/app/posts/[id]/page.tsx`
-- `<Markdown>` removido
-- `const bodyHtml = await renderMarkdown(post.body ?? '')`
-- `dangerouslySetInnerHTML={{ __html: bodyHtml }}`
+- `<Markdown>` removido, usa `dangerouslySetInnerHTML` de HTML pre-renderizado
 
 #### Atualizado: `src/app/page.tsx`
-- `Promise.all(issues.map(...))` para renderizar todos os previews em paralelo
-- Novo tipo `PostPreview` com campo `previewHtml: string`
+- `Promise.all(issues.map(...))` para renderizar previews em paralelo
+- Novo tipo `PostPreview` com `previewHtml`
 
 #### Atualizado: `src/components/search-form.tsx`
-- Consome `PostPreview` (sem `body` cru)
-- `dangerouslySetInnerHTML` do `previewHtml`
-- `react-markdown` removido do client bundle (-1 dep)
+- Consome `PostPreview`, `react-markdown` removido (-1 client bundle kb)
 
 #### Atualizado: `src/app/globals.css`
-Bloco `@layer components` com:
-- `.post-body figure[data-rehype-pretty-code-figure]` -> borda + rounded
-- `[data-rehype-pretty-code-title]` -> header com label da linguagem
-- `pre[data-language]` -> `overflow-x-auto`, shiki bg
-- `[data-line]` -> `block`, border-left, padding
-- `[data-highlighted-line]` -> border-left red + bg red/10
-- `[data-highlighted-chars]` -> bg red/20
-- `[data-line].diff.add` / `.diff.remove` -> emerald / red
-- `:not(pre) > code` -> inline code styled
-
-#### Atualizado: `src/app/posts/[id]/post.module.css`
-- `pre` sem padding (shiki controla)
-- `code` -> `font-mono text-sm`
-- Estilos para `a`, `blockquote`, `table`, `th`, `td`, `h1-h3`
+- `@layer components` block com shiki styles, diff line styles, inline code, etc.
 
 #### Deps adicionados
-- `shiki@^4.2.0`
-- `rehype-pretty-code@^0.14.3`
-- `@shikijs/transformers@^4.2.0`
-- `remark-gfm@^4.0.1`
-- `unified@^11.0.5`
-- `remark-parse@^11.0.0`
+- `shiki@^4.2.0`, `rehype-pretty-code@^0.14.3`, `@shikijs/transformers@^4.2.0`
+- `remark-gfm@^4.0.1`, `unified@^11.0.5`, `remark-parse@^11.0.0`
 - `remark-rehype@^11.1.2`
-- `rehype-stringify@^10.0.0` (transitivo)
 
 #### Deps removidos
 - `react-markdown@^9.1.0`
 
 ### Como verificar
-1. Abrir `http://localhost:3000/posts/<qualquer-id>` (com `.ts`, `.tsx`, `.tsx` no body)
-2. Verificar bloco de codigo com cores e numeros de linha
-3. Adicionar `// [!code highlight]` em uma linha e rebuild -> linha destacada
+1. Abrir `/posts/<id>` (com `.ts`/`.tsx` no body)
+2. Verificar bloco de codigo com cores e `data-line`
+3. Adicionar `// [!code highlight]` em uma linha -> linha destacada
 
-### Refs
-Phase 4.1
+---
+
+## 06 - CSS: OKLCH + Rate-Limit Fix
+
+**Data**: 2026-06-06
+**Tipo**: Fix
+
+### O que mudou
+
+#### Bug 1: `bg-base-background/70` nao compila
+- Tailwind 4.3 nao detecta hex em variaveis custom como cor parseavel
+- Cores `@theme` convertidas de `#hex` para `oklch(L C H)` (formato moderno, alpha nativo)
+- Todas as 16 cores do projeto convertidas: brand, base palette, gladiator (red accent)
+- `not-found.module.css`: `bg-base-background/70` -> `bg-black/70` (built-in)
+
+#### Bug 2: Rate limit GitHub em build anonimo
+- `getGithubIssues()` paginava ate 10 paginas (ate 1000 issues) + 50 detalhes = 51+ requests
+- Anonymous GitHub = 60 req/h, build falhava
+- `generateStaticParams` agora retorna `[]` quando `githubConfig.hasToken` e false
+- `dynamicParams = true` (default mas agora explicito)
+- Os 5 issues so sao pre-renderizados quando ha token; resto e ISR on-demand
+- Com `GITHUB_TOKEN` no `.env.local`, ate 5 issues sao SSG; resto ISR
+
+### Por que OKLCH
+- E o formato que o Tailwind 4 usa internamente
+- Suporta `/X` opacity modifier confiavelmente
+- `color-mix(in oklch, var(--color-X) 70%, transparent)` funciona em todos browsers modernos
+
+### Como verificar
+```bash
+rm -rf .next && pnpm build
+# esperado: build sem erros, com ou sem GITHUB_TOKEN
+```
+
+---
+
+## 07 - SEO: sitemap + robots + RSS + manifest + JSON-LD
+
+**Data**: 2026-06-06
+**Tipo**: Feature
+
+### O que mudou
+
+#### Novo: `src/app/sitemap.ts`
+- App Router `MetadataRoute.Sitemap` com `revalidate=1h`
+- Lista `/`, `/?ref=feed`, todos os `/posts/[id]` e `/feed.xml`
+- Per-post: `lastModified` = `issue.updated_at`, `priority: 0.8`
+
+#### Novo: `src/app/robots.ts`
+- `allow /`, `disallow /api/`, `disallow /_next/`
+- Aponta para `sitemap.xml`, seta `host`
+
+#### Novo: `src/app/feed.xml/route.ts`
+- Server-side RSS 2.0 via `feed` package
+- Lista todos os issues como items
+- `content` field usa preview HTML pre-renderizado
+- `Cache-Control: public, s-maxage=3600, stale-while-revalidate=86400`
+
+#### Novo: `src/lib/site.ts`
+- `SITE_CONFIG` centralizado (name, description, author, locale, repo)
+- `SITE_URL` de `NEXT_PUBLIC_SITE_URL` com default Vercel
+
+#### Novo: `src/app/manifest.ts`
+- PWA manifest: `name`, `short_name`, `display: standalone`
+- `theme_color: #3294F8`, `background_color: #071422`
+- Icons: `/icon.png` (any), `/apple-icon.png` (maskable 180x180)
+- Categorias: developer, technology, education
+- Gera `/manifest.webmanifest`
+
+#### Novo: `src/components/json-ld.tsx`
+- `ArticleJsonLd`: BlogPosting schema completo
+- `WebsiteJsonLd`: WebSite schema com `SearchAction` (sitelinks searchbox)
+- `PersonJsonLd`: Person schema para o autor
+
+#### Atualizado: `src/app/layout.tsx`
+- `metadata.alternates.types: application/rss+xml -> /feed.xml`
+- `metadata.manifest: /manifest.webmanifest`
+- `metadata.icons: icon + apple`
+- `metadata.appleWebApp: { capable, title, statusBarStyle }`
+- `metadata.formatDetection: { telephone: false }`
+
+#### Atualizado: `src/app/posts/[id]/page.tsx`
+- `<ArticleJsonLd>` com dados do `post.user`
+
+#### Atualizado: `src/app/page.tsx`
+- `<WebsiteJsonLd>` + `<PersonJsonLd>` no `<main>`
+
+#### Deps adicionados
+- `feed@^5.2.1`
+
+### Como verificar
+```bash
+pnpm build
+# rotas geradas: /, /_not-found, /feed.xml, /manifest.webmanifest,
+#                /posts/[id], /robots.txt, /sitemap.xml
+curl http://localhost:3000/robots.txt
+curl http://localhost:3000/sitemap.xml | head
+curl http://localhost:3000/feed.xml | head
+```
+
+---
+
+## 08 - UX: TOC + Reading Time + Label Filter
+
+**Data**: 2026-06-06
+**Tipo**: Feature
+
+### O que mudou
+
+#### Novo: `src/types/toc.ts`
+- `TocItem` type
+
+#### Deps adicionados
+- `rehype-slug@^6.0.0` - injeta `id="slug"` em h1-h6
+- `rehype-autolink-headings@^7.1.0` - wrap headings em anchor links
+- `github-slugger@^2.0.0` - determinismo de slugs
+
+#### Atualizado: `src/lib/markdown.ts`
+- `fullProcessor` com `rehype-slug` + `rehype-autolink-headings`
+- `extractToc(md)` retorna `TocItem[]` (apenas h2/h3, respeita code fences)
+- `readingTime(md)` retorna `{ words, minutes, text }` (200 wpm, strip code blocks/inline)
+
+#### Atualizado: `src/app/posts/[id]/page.tsx`
+- Sticky aside com TOC (so renderiza quando ha 2+ headings)
+- Header mostra `Clock icon + 'X min de leitura'`
+- Footer com `BookOpen icon + label chips` linkando para `/?label=NAME`
+
+#### Atualizado: `src/app/page.tsx`
+- Le `searchParams.label` alem de `q`
+- Passa `activeLabel` para `SearchForm`
+
+#### Atualizado: `src/components/search-form.tsx`
+- Filtro por label exato primeiro, depois busca case-insensitive
+- `allLabels` memo: agrega `label -> count`, sort by count desc
+- Chip row com `Tag icon`: toggle filter (`aria-pressed`)
+- Active chip: red border + bg + text
+- `Limpar` button para resetar ambos `q` e `label`
+- Empty state menciona qual filtro produziu zero resultados
+
+#### Atualizado: `src/app/globals.css`
+- `.post-body h1-h4 { scroll-margin-top: 5rem }` para anchor links nao colarem no header
+- `a.heading-anchor` inherits color, turns red on hover
+
+#### Atualizado: `src/app/posts/[id]/post.module.css`
+- `.postToc`, `.postTocItem`, `.postTocSub`, `.postFooter`, `.postFooterLabels`
+
+### Como verificar
+1. Abrir `/posts/<id-com-h2-e-h3>`
+2. Verificar sidebar TOC com scroll-spy
+3. Clicar em uma label chip no footer -> filtra `/`
+4. Clicar em "Limpar" no home -> volta para todas as publicacoes
+
+---
+
+## 09 - Engagement: Share + Related Posts
+
+**Data**: 2026-06-06
+**Tipo**: Feature
+
+### O que mudou
+
+#### Novo: `src/components/share-buttons.tsx`
+- Server Component para X/Twitter, LinkedIn, Reddit
+- `CopyLinkButton` (client) com `navigator.clipboard` + feedback "Copiado!"
+- `LinkedinLogo` SVG inline (Phosphor nao tem icone LinkedIn)
+- Todos com `target="_blank" rel="noopener noreferrer"`
+
+#### Novo: `src/components/related-posts.tsx`
+- Server Component que renderiza lista de posts relacionados
+- Cada item: title, relative updated_at, comment count, top 3 labels
+- Card inteiro e um link; `ArrowRight` icon
+- Retorna `null` quando nao ha posts relacionados
+
+#### Novo: `src/lib/github.ts -> getRelatedIssues()`
+- Filtra issues que compartilham pelo menos 1 label com o post atual
+- Exclui o proprio post
+- Retorna ate N resultados (default 3)
+
+#### Atualizado: `src/app/posts/[id]/page.tsx`
+- Awaits `getRelatedIssues` no RSC pass
+- Renderiza `<ShareButtons/>` e `<RelatedPosts/>` no fim do post
+
+### Como verificar
+1. Abrir `/posts/<id-com-labels>`
+2. Rolar ate o fim: ver botoes de share + "Posts relacionados" com ate 3 cards
+
+---
+
+## 10 - PWA + BlogProfile reativado
+
+**Data**: 2026-06-06
+**Tipo**: Feature
+
+### O que mudou
+
+#### Reativado: BlogProfile no home
+- Estava comentado no JSX original
+- Usa a variante Server Component da FASE 03, recebe `user` via prop
+- Fetch de `getGithubUser()` em paralelo com `getGithubIssues()` no mesmo RSC pass
+
+#### Novo: `src/app/manifest.ts`
+- PWA manifest completo (ver FASE 07)
+- Adiciona `appleWebApp`, `formatDetection: { telephone: false }` no layout
+
+### Como verificar
+```bash
+pnpm build
+# /manifest.webmanifest aparece na lista de rotas estaticas
+curl http://localhost:3000/manifest.webmanifest | jq .
+```
+
+---
+
+## 11 - DX: Vitest + Husky + CI
+
+**Data**: 2026-06-06
+**Tipo**: DX
+
+### O que mudou
+
+#### Testing: Vitest + Testing Library
+- `vitest.config.ts`: happy-dom env, `@` alias, `server-only` aliased to no-op
+- `vitest.setup.ts`: jest-dom matchers + auto-cleanup
+- `test/server-only-mock.ts`: mock vazio para `server-only`
+- `src/lib/markdown.test.ts`: **16 testes** cobrindo renderMarkdown, extractToc, readingTime
+- Scripts: `test`, `test:watch`, `test:ui`, `test:coverage`
+
+#### Commit quality: Husky + lint-staged + commitlint
+- `.husky/pre-commit`: roda `pnpm exec lint-staged`
+- `.husky/commit-msg`: roda `pnpm exec commitlint`
+- `commitlint.config.json`: conventional commits (feat/fix/chore/refactor/perf/docs/test/build/ci/style/revert), max 100 chars
+- `package.json lint-staged`: `biome check --write` + `vitest related` por arquivo staged
+
+#### CI: GitHub Actions
+- `.github/workflows/ci.yml`:
+  - Runs on push e PR para `main`
+  - Concurrency group cancela runs em paralelo
+  - Steps: checkout, pnpm 11, Node 20, install, lint, format-check, typecheck, test, build
+  - Build usa `GITHUB_TOKEN` secret
+  - Upload de `.next` como artifact em caso de falha
+
+#### Refactors para manter Biome verde
+- Remocao de imports/parametros nao usados
+- `LinkedinLogo` agora com `role=img` + `aria-label="LinkedIn"`
+- `<div role="group">` -> `<fieldset>` em `search-form`
+- 4 `biome-ignore lint/security/noDangerouslySetInnerHtml` para usos legitimos
+  (markdown HTML renderizado server-side, JSON.stringify JSON-LD)
+
+### Como verificar
+```bash
+pnpm typecheck && pnpm test && pnpm lint && pnpm build
+# esperado: 0 errors em todos, 16/16 testes passam
+```
+
+---
+
+## Pendentes (FASES 12-17)
+
+| # | Fase | Descricao | Esforco |
+|---|------|-----------|---------|
+| 12 | i18n | `next-intl` com traducoes PT-BR/EN, `<html lang>` dinamico | 4h |
+| 13 | Giscus | Comentarios GitHub via widget; requer `next-themes` (tema) | 2h |
+| 14 | Tema dark/light | `next-themes` + CSS variables com `[data-theme]` selector; refatorar `@theme` para definir `light:` em cada cor | 6h |
+| 15 | Sentry | `@sentry/nextjs` com source maps + `tunnelRoute` | 2h |
+| 16 | Python helper | Substituir `scripts/post.py` por `tsx scripts/post.ts` ou `node --experimental-strip-types` | 1h |
+| 17 | Playwright | E2E para home search, post page, label filter, RSS link | 3h |
