@@ -10,13 +10,19 @@ export const metadata: Metadata = {
     default: 'Dica Dev',
     template: '%s | Dica Dev',
   },
-  description: 'Dica Dev: um blog com dicas para desenvolvedores de software',
+  description: 'Um blog com dicas para desenvolvedores de software',
   authors: [{ name: 'Brenno Clins' }],
   creator: 'Brenno Clins',
   applicationName: 'Dica Dev',
   generator: 'Next.js',
   keywords: ['dev', 'developer', 'blog', 'programming', 'webdev', 'dicas'],
   metadataBase: new URL('https://dica-dev.vercel.app'),
+  alternates: {
+    canonical: '/',
+    types: {
+      'application/rss+xml': '/feed.xml',
+    },
+  },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
