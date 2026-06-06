@@ -1,10 +1,40 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-* {
-  @apply
-  m-0
-  p-0
-  box-border
+@theme {
+  /* Brand */
+  --color-blue: #3294F8;
+  --color-link-active: #9747FF;
+
+  /* Base palette (deep blue dark theme) */
+  --color-base-title: #E7EDF4;
+  --color-base-subtitle: #C4D4E3;
+  --color-base-text: #AFC2D4;
+  --color-base-span: #7B96B2;
+  --color-base-label: #3A536B;
+  --color-base-border: #1C2F41;
+  --color-base-post: #112131;
+  --color-base-profile: #0B1B2B;
+  --color-base-background: #071422;
+  --color-base-input: #040F1A;
+
+  /* Gladiator (red accent) */
+  --color-red-gladiator: #ff0000;
+  --color-post-gladiator: #440808;
+  --color-border-gladiator: #5B0909;
+  --color-background-gladiator: #360303;
+
+  /* Custom gradients reused from the old config */
+  --background-image-gradient-radial: radial-gradient(var(--tw-gradient-stops));
+  --background-image-gradient-conic:
+    conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops));
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }

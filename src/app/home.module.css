@@ -1,3 +1,5 @@
+@reference "./globals.css";
+
 .home {
   @apply
   relative 

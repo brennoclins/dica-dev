@@ -47,7 +47,8 @@
       "!**/*.min.js",
       "!**/pnpm-lock.yaml",
       "!**/package-lock.json",
-      "!**/*.css"
+      "!**/*.css",
+      "!next-env.d.ts"
     ]
   }
 }

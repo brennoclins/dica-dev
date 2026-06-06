@@ -1,3 +1,5 @@
+@reference "../app/globals.css";
+
 .searchForm {
   @apply
   relative

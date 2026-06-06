@@ -1,3 +1,5 @@
+@reference "../app/globals.css";
+
 .profile {
   @apply
   m-4
