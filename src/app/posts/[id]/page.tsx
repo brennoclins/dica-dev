@@ -12,6 +12,7 @@ import { ptBR } from 'date-fns/locale/pt-BR'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { Comments } from '@/components/comments'
 import { ArticleJsonLd } from '@/components/json-ld'
 import { RelatedPosts } from '@/components/related-posts'
 import { ShareButtons } from '@/components/share-buttons'
@@ -228,6 +229,11 @@ export default async function PostPage({ params }: PostPageProps) {
 
           <ShareButtons title={post.title} url={postUrl} />
           <RelatedPosts posts={related} />
+          <Comments
+            postNumber={post.number}
+            postTitle={post.title}
+            repo={`${githubConfig.user}/${githubConfig.repo}`}
+          />
         </section>
       </section>
     </main>
