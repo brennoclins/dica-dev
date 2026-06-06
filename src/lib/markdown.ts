@@ -19,7 +19,10 @@ import type { TocItem } from '@/types/toc'
 const PRETTY_CODE_OPTIONS = {
   keepBackground: true,
   defaultLang: 'plaintext',
-  theme: 'github-dark-dimmed',
+  theme: {
+    dark: 'github-dark-dimmed',
+    light: 'github-light',
+  },
   transformers: [transformerNotationDiff(), transformerNotationHighlight()],
 }
 

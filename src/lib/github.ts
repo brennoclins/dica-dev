@@ -111,6 +111,17 @@ export async function getGithubUser(
   return githubFetch<GithubUser>(`/users/${username}`)
 }
 
+export async function getGithubUserSafe(): Promise<GithubUser | null> {
+  try {
+    return await getGithubUser()
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('[github] getGithubUserSafe:', err)
+    }
+    return null
+  }
+}
+
 type SearchIssuesResponse = {
   total_count: number
   incomplete_results: boolean
@@ -144,6 +155,22 @@ export async function getGithubIssues(
   }
 
   return all
+}
+
+export async function getGithubIssuesSafe(
+  query: string = '',
+  user: string = GITHUB_USER,
+  repo: string = GITHUB_REPO
+): Promise<{ issues: GithubIssue[]; error: GithubApiError | null }> {
+  try {
+    const issues = await getGithubIssues(query, user, repo)
+    return { issues, error: null }
+  } catch (err) {
+    if (err instanceof GithubApiError) {
+      return { issues: [], error: err }
+    }
+    throw err
+  }
 }
 
 export async function getGithubIssue(

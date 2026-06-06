@@ -35,13 +35,15 @@ describe('renderMarkdown', () => {
     expect(html).toContain('checked')
   })
 
-  it('syntax-highlights fenced code blocks', async () => {
+  it('syntax-highlights fenced code blocks with dual theme', async () => {
     const md = '```ts\nconst x = 1\n```'
     const html = await renderMarkdown(md)
     expect(html).toContain('<pre')
     expect(html).toContain('<code')
     expect(html).toContain('data-language="ts"')
     expect(html).toContain('data-line')
+    expect(html).toContain('--shiki-light')
+    expect(html).toContain('--shiki-dark')
   })
 
   it('strips code blocks for inline counting', async () => {

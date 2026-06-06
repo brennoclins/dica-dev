@@ -2,14 +2,15 @@
 
 .home {
   @apply
-  relative 
+  relative
   flex
-  flex-col 
-  items-center 
+  flex-col
+  items-center
   justify-center
-  bg-[url('/ferrari.jpeg')] 
+  bg-[url('/ferrari.jpeg')]
   bg-cover
   z-0
+  min-h-screen
 }
 
 .homeOverLayer {
@@ -17,17 +18,32 @@
   absolute
   w-full
   h-full
-  
-  bg-gray-950/50 
+
+  bg-gray-950/50
   -z-10
+}
+
+[data-theme='light'] .homeOverLayer {
+  @apply
+  bg-white/60
+}
+
+.homeHeader {
+  @apply
+  w-full
+  flex
+  items-center
+  justify-between
+  p-4
+  z-10
 }
 
 .homeContainer {
   @apply
   max-w-5xl
-  flex 
-  flex-col 
-  items-center 
+  flex
+  flex-col
+  items-center
   justify-around
 }
 

@@ -15,6 +15,7 @@ import { notFound } from 'next/navigation'
 import { ArticleJsonLd } from '@/components/json-ld'
 import { RelatedPosts } from '@/components/related-posts'
 import { ShareButtons } from '@/components/share-buttons'
+import { ThemeToggle } from '@/components/theme-toggle'
 import {
   GithubApiError,
   getGithubIssue,
@@ -100,8 +101,14 @@ export default async function PostPage({ params }: PostPageProps) {
   try {
     post = await getGithubIssue(issueNumber)
   } catch (err) {
-    if (err instanceof GithubApiError && err.status === 404) {
-      notFound()
+    if (err instanceof GithubApiError) {
+      if (err.status === 404) {
+        notFound()
+      }
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`[posts/${id}] GitHub API error:`, err.message)
+      }
+      throw err
     }
     throw err
   }
@@ -137,6 +144,7 @@ export default async function PostPage({ params }: PostPageProps) {
             <Link href="/">
               <CaretLeft size={22} /> VOLTAR
             </Link>
+            <ThemeToggle />
           </div>
 
           <h2 className={styles.postHeaderTitle}>{post.title}</h2>
