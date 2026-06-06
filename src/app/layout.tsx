@@ -3,6 +3,8 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
+import { SITE_CONFIG } from '@/lib/site'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -23,6 +25,17 @@ export const metadata: Metadata = {
       'application/rss+xml': '/feed.xml',
     },
   },
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    title: SITE_CONFIG.name,
+    statusBarStyle: 'black-translucent',
+  },
+  formatDetection: { telephone: false },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
