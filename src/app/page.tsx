@@ -7,8 +7,8 @@ import { RateLimitNotice } from '@/components/rate-limit-notice'
 import { SearchForm } from '@/components/search-form'
 import { ThemeToggle } from '@/components/theme-toggle'
 import {
+  GithubApiError,
   getGithubIssuesPage,
-  getGithubIssuesSafe,
   getGithubLabels,
   getGithubUserSafe,
   githubConfig,
@@ -37,20 +37,23 @@ export default async function Home({ searchParams }: HomePageProps) {
     .filter(Boolean)
     .join(' ')
 
-  const [issuesResult, user, firstPage, labels] = await Promise.all([
-    getGithubIssuesSafe(combinedQuery),
+  const [issuesResult, user, labels] = await Promise.all([
+    getGithubIssuesPage(1, POSTS_PER_PAGE, combinedQuery)
+      .then(result => ({ result, error: null as GithubApiError | null }))
+      .catch(err => {
+        if (err instanceof GithubApiError) {
+          return {
+            result: { items: [], total_count: 0, hasMore: false },
+            error: err,
+          }
+        }
+        throw err
+      }),
     getGithubUserSafe(),
-    combinedQuery
-      ? getGithubIssuesPage(1, POSTS_PER_PAGE, combinedQuery)
-      : getGithubIssuesPage(1, POSTS_PER_PAGE, ''),
     getGithubLabels().catch(() => []),
   ])
 
-  const safeIssues = combinedQuery ? issuesResult.issues : firstPage.items
-  const totalCount = combinedQuery
-    ? issuesResult.issues.length
-    : firstPage.total_count
-  const hasMore = combinedQuery ? false : firstPage.hasMore
+  const safeIssues = issuesResult.result.items
 
   const initialPosts: PostCardData[] = await Promise.all(
     safeIssues.slice(0, POSTS_PER_PAGE).map(async issue => ({
@@ -64,10 +67,6 @@ export default async function Home({ searchParams }: HomePageProps) {
       ),
     }))
   )
-
-  const heroIssuesResult = combinedQuery
-    ? { issues: safeIssues, error: issuesResult.error }
-    : { issues: safeIssues, error: null as null }
 
   return (
     <>
@@ -107,15 +106,16 @@ export default async function Home({ searchParams }: HomePageProps) {
         <div className={styles.heroFade} />
       </section>
 
-      {heroIssuesResult.error ? (
+      {issuesResult.error ? (
         <section className={styles.feed}>
-          <RateLimitNotice error={heroIssuesResult.error} />
+          <RateLimitNotice error={issuesResult.error} />
         </section>
       ) : (
         <PostsFeed
+          key={`${q}:${label}`}
           initialPosts={initialPosts}
-          initialHasMore={hasMore}
-          initialTotalCount={totalCount}
+          initialHasMore={issuesResult.result.hasMore}
+          initialTotalCount={issuesResult.result.total_count}
           perPage={POSTS_PER_PAGE}
           query={q}
           label={label}
