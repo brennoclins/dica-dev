@@ -13,15 +13,14 @@
 .searchFormForm {
   @apply
   w-full
-  flex
-  flex-col
-  gap-2
+  relative
 }
 
 .searchFormInput {
   @apply
   w-full
   p-3
+  pr-12
   rounded-md
   border-l-8
   border-b-4
@@ -38,6 +37,24 @@
   focus:pl-4
 
   focus:border-b-red-gladiator
+}
+
+.searchFormSubmit {
+  @apply
+  absolute
+  right-3
+  top-1/2
+  -translate-y-1/2
+  flex
+  items-center
+  justify-center
+  p-2
+  rounded-md
+  text-base-span
+  transition-colors
+  hover:text-red-gladiator
+  disabled:opacity-50
+  cursor-pointer
 }
 
 .searchFormLabels {

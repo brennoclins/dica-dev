@@ -1,6 +1,6 @@
 'use client'
 
-import { Tag, X } from '@phosphor-icons/react/dist/ssr'
+import { MagnifyingGlass, Tag, X } from '@phosphor-icons/react/dist/ssr'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
   type FormEvent,
@@ -83,6 +83,14 @@ export function SearchForm({
           onChange={e => setSearchText(e.target.value)}
           aria-label={t('home.search.aria')}
         />
+        <button
+          type="submit"
+          className={styles.searchFormSubmit}
+          aria-label={t('home.search.aria')}
+          disabled={isPending}
+        >
+          <MagnifyingGlass size={20} aria-hidden />
+        </button>
       </form>
 
       {allLabels.length > 0 && (
